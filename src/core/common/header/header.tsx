@@ -8,7 +8,6 @@ import { setMobileSidebar } from "../../redux/sidebarSlice";
 import { all_routes } from "../../../feature-module/routes/all_routes";
 
 const Header = () => {
-
   const dispatch = useDispatch();
   const themeSettings = useSelector((state: any) => state.theme.themeSettings);
   const [isHiddenLayoutActive, setIsHiddenLayoutActive] = useState(() => {
@@ -109,24 +108,6 @@ const Header = () => {
             >
               <i className="ti ti-arrow-right" />
             </button>
-            {/* Search */}
-            <div className="me-auto d-flex align-items-center header-search d-lg-flex d-none">
-              {/* Search */}
-              <div className="input-icon-start position-relative me-2">
-                <span className="input-icon-addon">
-                  <i className="ti ti-search" />
-                </span>
-                <input
-                  type="text"
-                  className="form-control shadow-sm"
-                  placeholder="Search"
-                />
-                <span className="input-icon-addon text-dark shadow fs-18 d-inline-flex p-0 header-search-icon">
-                  <i className="ti ti-command" />
-                </span>
-              </div>
-              {/* /Search */}
-            </div>
           </div>
           <div className="d-flex align-items-center">
             {/* Search for Mobile */}
@@ -140,33 +121,6 @@ const Header = () => {
                 <i className="ti ti-search fs-16" />
               </button>
             </div>
-            {/* AI Assistance */}
-            <Link
-              to="#"
-              className="btn btn-liner-gradient me-3 d-lg-flex d-none"
-            >
-              AI Assistance
-              <i className="ti ti-chart-bubble-filled ms-1" />
-            </Link>
-            {/* AI Assistance */}
-            {/* Appointment */}
-            <div className="header-item">
-              <div className="dropdown me-2">
-                <Link to={all_routes.newAppointment} className="btn topbar-link">
-                  <i className="ti ti-calendar-due" />
-                </Link>
-              </div>
-            </div>
-            {/* Appointment */}
-            {/* Settings */}
-            <div className="header-item">
-              <div className="dropdown me-2">
-                <Link to={all_routes.profilesettings} className="btn topbar-link">
-                  <i className="ti ti-settings-2" />
-                </Link>
-              </div>
-            </div>
-            {/* Settings */}
             {/* Light/Dark Mode Button */}
             <div className="header-item d-none d-sm-flex me-2">
               <Link
@@ -212,10 +166,7 @@ const Header = () => {
                   <div className="p-2 border-bottom">
                     <div className="row align-items-center">
                       <div className="col">
-                        <h6 className="m-0 fs-16 fw-semibold">
-                          
-                          Notifications
-                        </h6>
+                        <h6 className="m-0 fs-16 fw-semibold">Notifications</h6>
                       </div>
                     </div>
                   </div>
@@ -489,7 +440,10 @@ const Header = () => {
                 </Link>
                 {/* Item*/}
                 <div className="pt-2 mt-2 border-top">
-                  <Link to={all_routes.login}className="dropdown-item text-danger">
+                  <Link
+                    to={all_routes.login}
+                    className="dropdown-item text-danger"
+                  >
                     <i className="ti ti-logout me-1 fs-17 align-middle" />
                     <span className="align-middle">Log Out</span>
                   </Link>

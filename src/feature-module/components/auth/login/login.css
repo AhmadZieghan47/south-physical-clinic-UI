@@ -1,3 +1,7 @@
+.login-logo img {
+  max-height: 250px;
+}
+
 @media (min-width: 768px) {
   .card-body.login-card {
     width: 500px;
