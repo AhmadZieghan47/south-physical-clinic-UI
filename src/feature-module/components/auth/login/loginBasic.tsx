@@ -24,13 +24,11 @@ const LoginBasic = () => {
           {/* start row */}
           <div className="row justify-content-center align-items-center vh-100 overflow-auto flex-wrap py-3">
             <div className="col-lg-4 mx-auto">
-              <form 
-                className="d-flex justify-content-center align-items-center"
-              >
+              <form className="d-flex justify-content-center align-items-center">
                 <div className="d-flex flex-column justify-content-lg-center p-4 p-lg-0 pb-0 flex-fill">
-                  <div className=" mx-auto mb-4 text-center">
+                  <div className="login-logo mx-auto mb-4 text-center">
                     <ImageWithBasePath
-                      src="assets/img/logo.svg"
+                      src="assets/img/logo2.png"
                       className="img-fluid"
                       alt="Logo"
                     />
@@ -39,9 +37,6 @@ const LoginBasic = () => {
                     <div className="card-body">
                       <div className="text-center mb-3">
                         <h5 className="mb-1 fs-20 fw-bold">Sign In</h5>
-                        <p className="mb-0">
-                          Please enter below details to access the dashboard
-                        </p>
                       </div>
                       <div className="mb-3">
                         <label className="form-label">Email Address</label>
@@ -51,7 +46,6 @@ const LoginBasic = () => {
                           </span>
                           <input
                             type="text"
-                            
                             className="form-control border-start-0 ps-0"
                             placeholder="Enter Email Address"
                           />
@@ -119,67 +113,12 @@ const LoginBasic = () => {
                           Login
                         </Link>
                       </div>
-                      <div className="login-or position-relative mb-3">
-                        <span className="span-or">OR</span>
-                      </div>
-                      <div className="mb-3">
-                        <div className="d-flex align-items-center justify-content-center flex-wrap">
-                          <div className="text-center me-2 flex-fill">
-                            <Link
-                              to="#"
-                              className="br-10 p-1 btn btn-outline-light border d-flex align-items-center justify-content-center"
-                            >
-                              <ImageWithBasePath
-                                className="img-fluid m-1"
-                                src="assets/img/icons/facebook-logo.svg"
-                                alt="Facebook"
-                              />
-                            </Link>
-                          </div>
-                          <div className="text-center me-2 flex-fill">
-                            <Link
-                              to="#"
-                              className="br-10 p-1 btn btn-outline-light border d-flex align-items-center justify-content-center"
-                            >
-                              <ImageWithBasePath
-                                className="img-fluid m-1"
-                                src="assets/img/icons/google-logo.svg"
-                                alt="Google"
-                              />
-                            </Link>
-                          </div>
-                          <div className="text-center me-2 flex-fill">
-                            <Link
-                              to="#"
-                              className="br-10 p-1 btn btn-outline-light border d-flex align-items-center justify-content-center"
-                            >
-                              <ImageWithBasePath
-                                className="img-fluid m-1"
-                                src="assets/img/icons/apple-logo.svg"
-                                alt="apple"
-                              />
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <h6 className="fw-normal fs-14 text-dark mb-0">
-                          Don’t have an account yet?
-                          <Link to={all_routes.registerbasic} className="hover-a">
-                            
-                            Register
-                          </Link>
-                        </h6>
-                      </div>
                     </div>
                     {/* end card body */}
                   </div>
                   {/* end card */}
                 </div>
               </form>
-              <p className="text-dark text-center">
-                Copyright © 2025 - Preclinic.
-              </p>
             </div>
             {/* end col */}
           </div>

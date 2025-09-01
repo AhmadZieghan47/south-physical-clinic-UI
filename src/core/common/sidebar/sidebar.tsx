@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ImageWithBasePath from "../../imageWithBasePath";
 import React, { useEffect, useState } from "react";
@@ -9,19 +7,20 @@ import { setExpandMenu, setMobileSidebar } from "../../redux/sidebarSlice";
 import { updateTheme } from "../../redux/themeSlice";
 import { all_routes } from "../../../feature-module/routes/all_routes";
 
+import "./sidebar.css"
 
 const Sidebar = () => {
   const Location = useLocation();
-  const [subOpen, setSubopen] = useState<any>("");
+  const [subOpen, setSubOpen] = useState<any>("");
   const [subsidebar, setSubsidebar] = useState("");
   const dispatch = useDispatch();
 
   const toggleSidebar = (title: any) => {
     localStorage.setItem("menuOpened", title);
     if (title === subOpen) {
-      setSubopen("");
+      setSubOpen("");
     } else {
-      setSubopen(title);
+      setSubOpen(title);
     }
   };
 
@@ -96,9 +95,9 @@ const Sidebar = () => {
   const mobileSidebar = useSelector(
     (state: any) => state.sidebarSlice.mobileSidebar
   );
-   const toggleMobileSidebar = () => {
-      dispatch(setMobileSidebar(!mobileSidebar));
-    };
+  const toggleMobileSidebar = () => {
+    dispatch(setMobileSidebar(!mobileSidebar));
+  };
   useEffect(() => {
     const rootElement: any = document.documentElement;
     Object.entries(themeSettings).forEach(([key, value]) => {
@@ -110,8 +109,6 @@ const Sidebar = () => {
       rootElement.classList.remove("mini-sidebar");
     }
   }, [themeSettings]);
-
-  
 
   return (
     <>
@@ -126,9 +123,13 @@ const Sidebar = () => {
         <div className="sidebar-logo">
           <div>
             {/* Logo Normal */}
-            <Link to={all_routes.dashboard} className="logo logo-normal">
+            <div className="logo-with-text d-flex">
+              <ImageWithBasePath src="assets/img/logo22.png" alt="Logo" />
+              <span>South Physical</span>
+            </div>
+            {/* <Link to={all_routes.dashboard} className="logo logo-normal">
               <ImageWithBasePath src="assets/img/logo.svg" alt="Logo" />
-            </Link>
+            </Link> */}
             {/* Logo Small */}
             <Link to={all_routes.dashboard} className="logo-small">
               <ImageWithBasePath src="assets/img/logo-small.svg" alt="Logo" />
@@ -146,7 +147,7 @@ const Sidebar = () => {
             <i className="ti ti-arrow-left" />
           </button>
           {/* Sidebar Menu Close */}
-          <button className="sidebar-close"  onClick={toggleMobileSidebar}>
+          <button className="sidebar-close" onClick={toggleMobileSidebar}>
             <i className="ti ti-x align-middle" />
           </button>
         </div>
@@ -154,119 +155,6 @@ const Sidebar = () => {
         {/* Sidenav Menu */}
         <div className="sidebar-inner" data-simplebar="">
           <div id="sidebar-menu" className="sidebar-menu">
-            <div className="sidebar-top shadow-sm p-2 rounded-1 mb-3 dropend">
-              <Link
-                to="#"
-                className="drop-arrow-none"
-                data-bs-toggle="dropdown"
-                data-bs-auto-close="outside"
-                data-bs-offset="0,22"
-                aria-haspopup="false"
-                aria-expanded="false"
-              >
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <span className="avatar rounded-circle flex-shrink-0 p-2">
-                      <ImageWithBasePath
-                        src="./assets/img/icons/trustcare.svg"
-                        alt="img"
-                      />
-                    </span>
-                    <div className="ms-2">
-                      <h6 className="fs-14 fw-semibold mb-0">
-                        Trustcare Clinic
-                      </h6>
-                      <p className="fs-13 mb-0">Lasvegas</p>
-                    </div>
-                  </div>
-                  <i className="ti ti-arrows-transfer-up" />
-                </div>
-              </Link>
-              <div className="dropdown-menu dropdown-menu-lg">
-                <div className="p-2">
-                  <label className="dropdown-item d-flex align-items-center justify-content-between p-1">
-                    <span className="d-flex align-items-center">
-                      <span className="me-2">
-                        <ImageWithBasePath
-                          src="assets/img/icons/clinic-01.svg"
-                          alt=""
-                        />
-                      </span>
-                      <span className="fw-semibold text-dark">
-                        CureWell Medical Hub
-                        <small className="d-block text-muted fw-normal fs-13">
-                          Ohio
-                        </small>
-                      </span>
-                    </span>
-                    <input
-                      className="form-check-input m-0 me-2"
-                      type="checkbox"
-                    />
-                  </label>
-                  <label className="dropdown-item d-flex align-items-center justify-content-between p-1">
-                    <span className="d-flex align-items-center">
-                      <span className="me-2">
-                        <ImageWithBasePath
-                          src="assets/img/icons/clinic-02.svg"
-                          alt=""
-                        />
-                      </span>
-                      <span className="fw-semibold text-dark">
-                        Trustcare Clinic
-                        <small className="d-block text-muted fw-normal fs-13">
-                          Lasvegas
-                        </small>
-                      </span>
-                    </span>
-                    <input
-                      className="form-check-input m-0 me-2"
-                      type="checkbox"
-                    />
-                  </label>
-                  <label className="dropdown-item d-flex align-items-center justify-content-between p-1">
-                    <span className="d-flex align-items-center">
-                      <span className="me-2">
-                        <ImageWithBasePath
-                          src="assets/img/icons/clinic-03.svg"
-                          alt=""
-                        />
-                      </span>
-                      <span className="fw-semibold text-dark">
-                        NovaCare Medical
-                        <small className="d-block text-muted fw-normal fs-13">
-                          Washington
-                        </small>
-                      </span>
-                    </span>
-                    <input
-                      className="form-check-input m-0 me-2"
-                      type="checkbox"
-                    />
-                  </label>
-                  <label className="dropdown-item d-flex align-items-center justify-content-between p-1">
-                    <span className="d-flex align-items-center">
-                      <span className="me-2">
-                        <ImageWithBasePath
-                          src="assets/img/icons/clinic-04.svg"
-                          alt=""
-                        />
-                      </span>
-                      <span className="fw-semibold text-dark">
-                        Greeny Medical Clinic
-                        <small className="d-block text-muted fw-normal fs-13">
-                          Illinios
-                        </small>
-                      </span>
-                    </span>
-                    <input
-                      className="form-check-input m-0 me-2"
-                      type="checkbox"
-                    />
-                  </label>
-                </div>
-              </div>
-            </div>
             <ul>
               {SidebarData?.map((mainLabel, index) => (
                 <React.Fragment key={`main-${index}`}>
@@ -367,8 +255,6 @@ const Sidebar = () => {
                                               handleLayoutClick(item?.label);
                                             }
                                           }}
-
-
                                         >
                                           {item?.label}
                                           {(item?.submenu ||
@@ -434,29 +320,6 @@ const Sidebar = () => {
                 </React.Fragment>
               ))}
             </ul>
-          </div>
-          <div className="sidebar-footer border-top mt-3">
-            <div className="trial-item mt-0 p-3 text-center">
-              <div className="trial-item-icon rounded-4 mb-3 p-2 text-center shadow-sm d-inline-flex">
-                <ImageWithBasePath
-                  src="./assets/img/icons/sidebar-icon.svg"
-                  alt="img"
-                />
-              </div>
-              <div>
-                <h6 className="fs-14 fw-semibold mb-1">Upgrade To Pro</h6>
-                <p className="fs-13 mb-0">
-                  Check 1 min video and begin use Preclinic like a pro
-                </p>
-              </div>
-              <Link
-                to="#"
-                className="close-icon shadow-sm"
-
-              >
-                <i className="ti ti-x" />
-              </Link>
-            </div>
           </div>
         </div>
       </div>
