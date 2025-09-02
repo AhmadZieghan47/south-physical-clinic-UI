@@ -29,7 +29,7 @@ const ThemeSettings = () => {
   };
   return (
     <>
-      <div className="sidebar-contact">
+      {/* <div className="sidebar-contact">
         <div
           className="toggle-theme"
           data-bs-toggle="offcanvas"
@@ -37,7 +37,7 @@ const ThemeSettings = () => {
         >
           <i className="ti ti-settings" />
         </div>
-      </div>
+      </div> */}
       <div
         className="sidebar-themesettings offcanvas offcanvas-end"
         id="theme-setting"

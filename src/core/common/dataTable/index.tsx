@@ -21,7 +21,7 @@ const Datatable: React.FC<DatatableProps> = ({
   }, [Selection]);
 
   useEffect(() => {
-    const filteredData = dataSource.filter((record) =>
+    const filteredData = dataSource?.filter((record) =>
       Object.values(record).some((field) =>
         String(field).toLowerCase().includes(searchText.toLowerCase())
       )
@@ -49,7 +49,7 @@ const Datatable: React.FC<DatatableProps> = ({
         showSizeChanger: false,
         pageSize,
         onShowSizeChange: (size) => setPageSize(size),
-        total: filteredDataSource.length,
+        total: filteredDataSource?.length,
         showTotal: (total) => (
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             Rows per page:
