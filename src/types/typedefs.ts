@@ -188,6 +188,7 @@ export interface Patient {
   notes: string | null;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  plans?: TreatmentPlan[];
 }
 
 export interface InsertPatient {
