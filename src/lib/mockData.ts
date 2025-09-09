@@ -1,0 +1,153 @@
+import type { AppointmentRow } from "../feature-module/components/pages/clinic-modules/patient-details/AppointmentsTable";
+import type { PaymentRow } from "../feature-module/components/pages/clinic-modules/patient-details/PaymentsTable";
+import type { Patient } from "../types/typedefs";
+
+export const mockPayments: PaymentRow[] = [
+  {
+    id: "#TNX0025",
+    description: "General Consultation",
+    paidDate: "2025-04-30",
+    method: "PayPal",
+    amount: 800,
+    status: "COMPLETED",
+  },
+  {
+    id: "#TNX0024",
+    description: "Dental Cleaning",
+    paidDate: "2025-04-15",
+    method: "Debit Card",
+    amount: 930,
+    status: "PENDING",
+  },
+  {
+    id: "#TNX0023",
+    description: "Eye Checkup",
+    paidDate: "2025-04-02",
+    method: "Cheque",
+    amount: 850,
+    status: "COMPLETED",
+  },
+  {
+    id: "#TNX0022",
+    description: "X-Ray",
+    paidDate: "2025-03-27",
+    method: "Debit Card",
+    amount: 80,
+    status: "COMPLETED",
+  },
+  {
+    id: "#TNX0021",
+    description: "Physiotherapy Session",
+    paidDate: "2025-03-12",
+    method: "PayPal",
+    amount: 650,
+    status: "COMPLETED",
+  },
+  {
+    id: "#TNX0020",
+    description: "Cardiac Screening",
+    paidDate: "2025-03-05",
+    method: "Cheque",
+    amount: 430,
+    status: "COMPLETED",
+  },
+  {
+    id: "#TNX0019",
+    description: "Skin Allergy Test",
+    paidDate: "2025-02-24",
+    method: "Debit Card",
+    amount: 300,
+    status: "PENDING",
+  },
+  {
+    id: "#TNX0018",
+    description: "Blood Test",
+    paidDate: "2025-02-16",
+    method: "Cheque",
+    amount: 450,
+    status: "COMPLETED",
+  },
+  {
+    id: "#TNX0017",
+    description: "ENT Consultation",
+    paidDate: "2025-02-01",
+    method: "Debit Card",
+    amount: 570,
+    status: "COMPLETED",
+  },
+  {
+    id: "#TNX0017-B",
+    description: "Nutrition Counseling",
+    paidDate: "2025-01-25",
+    method: "PayPal",
+    amount: 800,
+    status: "COMPLETED",
+  },
+];
+
+export const mockAppointments: AppointmentRow[] = [
+  {
+    id: 1,
+    dateTime: "30 Apr 2025 - 09:30 AM",
+    mode: "In-person",
+    status: "Checked Out",
+    doctor: {
+      name: "Dr. Mick Thompson",
+      specialty: "Cardiologist",
+      avatarSrc: "assets/img/doctors/doctor-01.jpg",
+    },
+  },
+  {
+    id: 2,
+    dateTime: "15 Apr 2025 - 11:20 AM",
+    mode: "Online",
+    status: "Checked In",
+    doctor: {
+      name: "Dr. Sarah Johnson",
+      specialty: "Orthopedic Surgeon",
+      avatarSrc: "assets/img/doctors/doctor-02.jpg",
+    },
+  },
+];
+
+export const patientData: Patient = {
+  id: "PT0025",
+  fullName: "Samir Haddad",
+  dob: "1990-05-01",
+  gender: "M",
+  phone: "0790412554",
+  hasInsurance: false,
+  balance: "0.00",
+  extraCare: true,
+  nationalId: "A123456009",
+  addressJson: {
+    city: "Amman",
+    street: "Wadi Saqra",
+  },
+  notes: "First visit",
+  createdAt: "2025-08-19T07:34:23.644Z",
+  updatedAt: "2025-08-19T07:37:02.610Z",
+  plans: [
+    {
+      id: "1",
+      patientId: "1",
+      planType: "PACKAGE",
+      packageCode: "PKG10_15",
+      priceBasis: "PACKAGE_RATE",
+      primaryTherapistId: "3",
+      startDate: "2025-08-10",
+      status: "ONGOING",
+      totalSessions: 10,
+      remainingSessions: 10,
+      targetFreqPerWeek: 1,
+      referringDoctorId: "1",
+      insuranceReferralAuth: "REF-ALI-001",
+      freqAdvisory2w: false,
+      initialDxTextEn: "MRI shows mild meniscus tear",
+      initialDxTextAr: "تصوير بالرنين يظهر تمزقًا طفيفًا",
+      initialDxFileId: null,
+      createdAt: "2025-08-14T09:28:00.151Z",
+      updatedAt: "2025-08-14T09:28:00.151Z",
+    },
+  ],
+};
