@@ -33,6 +33,7 @@ export const SidebarData = [
           { label: "Patients", link: routes.patients },
           { label: "Patient Details", link: routes.patientDetails },
           { label: "Create Patient", link: routes.createPatient },
+          { label: "Patient Create Wizard", link: routes.patientCreateWizard },
         ],
       },
       {

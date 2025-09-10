@@ -1,0 +1,44 @@
+import { Controller, useFormContext } from "react-hook-form";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+
+type Props = {
+  name: string;
+  label?: string;
+  placeholder?: string;
+  format?: string;
+};
+export default function RHFDate({
+  name,
+  label,
+  placeholder = "DD-MM-YYYY",
+  format = "DD-MM-YYYY",
+}: Props) {
+  const {
+    control,
+    setValue,
+    formState: { errors },
+  } = useFormContext();
+  const err = (errors as any)[name]?.message as string | undefined;
+
+  return (
+    <div className="mb-3">
+      {label && <label className="form-label fw-medium">{label}</label>}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { value } }) => (
+          <DatePicker
+            value={value ? dayjs(value, "YYYY-MM-DD") : null}
+            format={format}
+            className={`form-control ${err ? "is-invalid" : ""}`}
+            placeholder={placeholder}
+            onChange={(d) => setValue(name, d ? d.format("YYYY-MM-DD") : "")}
+            suffixIcon={null}
+          />
+        )}
+      />
+      {err && <div className="invalid-feedback d-block">{err}</div>}
+    </div>
+  );
+}

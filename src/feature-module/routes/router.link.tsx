@@ -56,6 +56,7 @@ import AppointmentConsultations from "../components/pages/clinic-modules/appoint
 import Appointments from "../components/pages/clinic-modules/appointments/appointments";
 import Assets from "../components/pages/clinic-modules/assets/assets";
 import CreatePatient from "../components/pages/clinic-modules/create-patient/createPatient";
+import PatientCreateWizard from "../../modules/patients/create/PatientCreateWizard";
 import DoctorDetails from "../components/pages/clinic-modules/doctor-details/doctorDetails";
 import DoctorsList from "../components/pages/clinic-modules/doctors-list/doctorsList";
 import Doctors from "../components/pages/clinic-modules/doctors/doctors";
@@ -260,6 +261,11 @@ export const publicRoutes = [
   {
     path: routes.dashboard,
     element: <Dashboard />,
+    route: Route,
+  },
+  {
+    path: routes.patientCreateWizard,
+    element: <PatientCreateWizard />,
     route: Route,
   },
   {
