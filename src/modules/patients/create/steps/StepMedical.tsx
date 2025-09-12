@@ -1,46 +1,45 @@
-import RHFTextarea from "../../../../core/components/Form/RHFTextarea";
 import RHFCheckbox from "../../../../core/components/Form/RHFCheckbox";
 import RHFText from "../../../../core/components/Form/RHFText";
+import RHFMultiSelect from "../../../../core/components/Form/RHFMultiSelect";
+import {
+  implantedDevicesOptions,
+  medicalHistoryOptions,
+} from "../../../../lib/constants";
 
 export default function StepMedical() {
   return (
     <div className="row">
-      <div className="col-md-6">
+      <div className="col-md">
         <RHFText
           name="medical.diagnoses.0"
           label="Primary Diagnosis"
-          placeholder="e.g., Low back pain"
-        />
-      </div>
-      <div className="col-md-6">
-        <RHFText
-          name="medical.allergies.0"
-          label="Allergy (optional)"
-          placeholder="e.g., Penicillin"
-        />
-      </div>
-
-      <div className="col-md-12">
-        <RHFTextarea name="medical.medicalHistory" label="Medical History" />
-      </div>
-      <div className="col-md-12">
-        <RHFTextarea
-          name="medical.currentMedications"
-          label="Current Medications"
+          placeholder="Low back pain + Disc herniation + ..."
         />
       </div>
       <div className="col-md-12">
-        <RHFTextarea
+        <RHFMultiSelect
+          name="medical.medicalHistory"
+          label="Medical History"
+          options={medicalHistoryOptions}
+          allowAddNew={true}
+        />
+      </div>
+      <div className="col-md-12">
+        <RHFMultiSelect
           name="medical.orthopedicImplants"
           label="Orthopedic Implants"
+          options={implantedDevicesOptions}
+          allowAddNew={true}
         />
       </div>
 
-      <div className="col-md-6">
-        <RHFCheckbox name="medical.extraCare" label="Extra Care" />
-      </div>
-      <div className="col-md-6">
-        <RHFCheckbox name="medical.hasInsurance" label="Has Insurance" />
+      <div className="col-xl-6">
+        <RHFCheckbox
+          className="important-switch"
+          name="medical.extraCare"
+          label="Extra Care"
+          variant="switch"
+        />
       </div>
     </div>
   );

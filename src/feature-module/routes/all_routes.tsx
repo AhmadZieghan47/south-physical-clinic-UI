@@ -110,7 +110,7 @@ export const all_routes = {
   patients: "/patients",
   patientsGrid: "/patients-grid",
   editPatient: "/edit-patient",
-  patientDetails: "/patient-details",
+  patientDetails: "/patient-details/:id",
   createPatient: "/create-patient",
   patientCreateWizard: "/patient-create-wizard",
   appointments: "/appointments",

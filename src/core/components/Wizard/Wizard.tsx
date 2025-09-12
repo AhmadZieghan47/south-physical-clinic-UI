@@ -29,11 +29,11 @@ export default function Wizard({
           {steps.map((s, i) => (
             <li
               key={s}
-              className={`px-3 py-2 rounded border ${
+              className={`px-3 py-2 rounded border flex-grow-1 text-center ${
                 i === activeStep ? "bg-primary text-white" : "bg-light"
               }`}
             >
-              {i + 1}. {s}
+              {s}
             </li>
           ))}
         </ol>
@@ -67,7 +67,7 @@ export default function Wizard({
               onClick={onFinish}
               disabled={loading}
             >
-              {loading ? "Creating..." : "Create Patient & Plan"}
+              {loading ? "Creating..." : "Create Patient"}
             </button>
           )}
         </div>

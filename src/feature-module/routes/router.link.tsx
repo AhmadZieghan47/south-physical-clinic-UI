@@ -65,7 +65,7 @@ import EditPatient from "../components/pages/clinic-modules/edit-patient/editPat
 import Locations from "../components/pages/clinic-modules/locations/locations";
 import Messages from "../components/pages/clinic-modules/messages/messages";
 import NewAppointment from "../components/pages/clinic-modules/new-appointment/newAppointment";
-import PatientDetails from "../components/pages/clinic-modules/patient-details/patientDetails";
+import PatientDetails from "../components/pages/clinic-modules/patient-details/PatientDetailsPage";
 import PatientsGrid from "../components/pages/clinic-modules/patients-grid/patientsGrid";
 import Patients from "../components/pages/clinic-modules/patients/patients";
 import Services from "../components/pages/clinic-modules/services/services";

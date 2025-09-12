@@ -189,6 +189,9 @@ export interface Patient {
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
   plans?: TreatmentPlan[];
+  payments?: Payment[];
+  files?: FileBlob[];
+  insuranceProfiles?: InsuranceProfile[];
 }
 
 export interface InsertPatient {
@@ -280,6 +283,7 @@ export interface TreatmentPlan {
   initialDxFileId: BigIntStr | null;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  appointments?: Appointment[];
 }
 
 export interface InsertTreatmentPlan {

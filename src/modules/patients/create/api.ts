@@ -1,4 +1,4 @@
-import api from "../../../core/net/api";
+import api from "../../../lib/api";
 import type { FullPayload } from "./schema";
 
 export type CreatePatientRes = { id: string };

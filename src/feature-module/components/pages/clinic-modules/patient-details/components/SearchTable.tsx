@@ -1,4 +1,4 @@
-import SearchInput from "../../../../../core/common/dataTable/dataTableSearch";
+import SearchInput from "@/core/common/dataTable/dataTableSearch";
 
 export interface Props {
   searchText: string;

@@ -1,11 +1,12 @@
-import axios from "axios";
 import { Link } from "react-router";
 import { useState } from "react";
 
 import { all_routes } from "../../../routes/all_routes";
 import ImageWithBasePath from "../../../../core/imageWithBasePath";
+import api from "../../../../lib/api";
+import { saveAuth } from "../../../../lib/authHelper";
 
-import "./login.css"
+import "./login.css";
 
 const handleSubmit = async (event: any) => {
   // No refresh on submit
@@ -16,21 +17,30 @@ const handleSubmit = async (event: any) => {
   const password = event.target.password.value;
 
   try {
-    const login = await axios.post('http://localhost:3000/api/v1/auth/login', { email: username, password })
-    console.log(login)
+    const response = await api.post("/auth/login", {
+      email: username,
+      password,
+    });
+    console.log("Login successful:", response.data);
+
+    // Save authentication data
+    if (response.data.token && response.data.user) {
+      saveAuth(response.data);
+      // Redirect to dashboard or home page
+      window.location.href = "/dashboard";
+    }
   } catch (error) {
-    console.log('response start', JSON.stringify(error), 'response end')
+    console.error("Login failed:", error);
+    // Handle login error (show error message to user)
   }
-  console.log(`username: ${username}`)
-  console.log(`password: ${password}`)
-}
+};
 
 const Login = () => {
   const [passwordVisibility, setPasswordVisibility] = useState<Boolean>(false);
 
-    const togglePasswordVisibility = () => {
-      setPasswordVisibility((prevState) => !prevState);
-    };
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility((prevState) => !prevState);
+  };
 
   return (
     <>
@@ -83,16 +93,17 @@ const Login = () => {
                             </span>
                             <input
                               name="password"
-                              type={
-                                passwordVisibility
-                                  ? "password"
-                                  : "text"
-                              }
+                              type={passwordVisibility ? "password" : "text"}
                               className="pass-input form-control ps-0 border-0"
                               placeholder="****************"
                             />
                             <span className="input-group-text bg-white border-0">
-                              <i className={`ti toggle-password ti-eye${passwordVisibility ? "-off" : ""} text-dark fs-14`} onClick={togglePasswordVisibility} />
+                              <i
+                                className={`ti toggle-password ti-eye${
+                                  passwordVisibility ? "-off" : ""
+                                } text-dark fs-14`}
+                                onClick={togglePasswordVisibility}
+                              />
                             </span>
                           </div>
                         </div>
@@ -123,7 +134,9 @@ const Login = () => {
                         </div>
                       </div>
                       <div className="mb-2">
-                        <button type="submit" className="btn btn-primary w-100">Login</button>
+                        <button type="submit" className="btn btn-primary w-100">
+                          Login
+                        </button>
                       </div>
                       {/* <div className="login-or position-relative mb-3">
                         <span className="span-or">OR</span>

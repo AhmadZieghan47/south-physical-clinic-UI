@@ -13,7 +13,7 @@ export const personalSchema = zod.object({
 export const medicalSchema = zod.object({
   diagnoses: zod.array(zod.string()).default([]),
   allergies: zod.array(zod.string()).default([]),
-  medicalHistory: zod.string().optional(),
+  medicalHistory: zod.array(zod.string()).default([]),
   currentMedications: zod.string().optional(),
   orthopedicImplants: zod.string().optional(),
   extraCare: zod.boolean().default(false),

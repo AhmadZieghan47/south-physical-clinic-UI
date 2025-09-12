@@ -1,6 +1,6 @@
 import type { Patient } from "../types/typedefs";
 import type { GetPatientsParams } from "../types/patient";
-import api from "./axiosClient";
+import api from "../lib/api";
 
 export async function getPatients(params: GetPatientsParams = {}) {
   const { page, pageSize, search } = params;

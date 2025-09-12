@@ -1,13 +1,12 @@
-import type { AppointmentRow } from "../feature-module/components/pages/clinic-modules/patient-details/AppointmentsTable";
-import type { PaymentRow } from "../feature-module/components/pages/clinic-modules/patient-details/PaymentsTable";
+import type { AppointmentRow } from "@/feature-module/components/pages/clinic-modules/patient-details";
 import type { Patient } from "../types/typedefs";
 
-export const mockPayments: PaymentRow[] = [
+export const mockPayments = [
   {
     id: "#TNX0025",
     description: "General Consultation",
     paidDate: "2025-04-30",
-    method: "PayPal",
+    method: "CASH",
     amount: 800,
     status: "COMPLETED",
   },
@@ -87,26 +86,73 @@ export const mockPayments: PaymentRow[] = [
 
 export const mockAppointments: AppointmentRow[] = [
   {
-    id: 1,
-    dateTime: "30 Apr 2025 - 09:30 AM",
-    mode: "In-person",
-    status: "Checked Out",
-    doctor: {
+    id: "1",
+    planId: "1",
+    therapistId: "1",
+    startsAt: "2025-04-30T09:30:00Z",
+    endsAt: "2025-04-30T10:30:00Z",
+    sessionType: "REGULAR",
+    location: "CLINIC",
+    status: "COMPLETED",
+    noteEn: "Regular physiotherapy session completed successfully",
+    noteAr: null,
+    cancelReason: null,
+    createdAt: "2025-04-25T10:00:00Z",
+    updatedAt: "2025-04-30T10:30:00Z",
+    therapist: {
       name: "Dr. Mick Thompson",
-      specialty: "Cardiologist",
+      specialty: "Physiotherapist",
       avatarSrc: "assets/img/doctors/doctor-01.jpg",
     },
+    sessionTypeLabel: "Regular Session",
+    locationLabel: "In-person",
+    statusLabel: "Completed",
   },
   {
-    id: 2,
-    dateTime: "15 Apr 2025 - 11:20 AM",
-    mode: "Online",
-    status: "Checked In",
-    doctor: {
+    id: "2",
+    planId: "1",
+    therapistId: "2",
+    startsAt: "2025-04-15T11:20:00Z",
+    endsAt: "2025-04-15T12:20:00Z",
+    sessionType: "SHOCK_WAVE",
+    location: "CLINIC",
+    status: "CHECKED_IN",
+    noteEn: "Shock wave therapy session in progress",
+    noteAr: null,
+    cancelReason: null,
+    createdAt: "2025-04-10T14:00:00Z",
+    updatedAt: "2025-04-15T11:20:00Z",
+    therapist: {
       name: "Dr. Sarah Johnson",
-      specialty: "Orthopedic Surgeon",
+      specialty: "Physical Therapist",
       avatarSrc: "assets/img/doctors/doctor-02.jpg",
     },
+    sessionTypeLabel: "Shock Wave Therapy",
+    locationLabel: "In-person",
+    statusLabel: "Checked In",
+  },
+  {
+    id: "3",
+    planId: "1",
+    therapistId: "3",
+    startsAt: "2025-04-02T08:15:00Z",
+    endsAt: "2025-04-02T09:15:00Z",
+    sessionType: "HOME",
+    location: "HOME",
+    status: "CANCELLED",
+    noteEn: null,
+    noteAr: null,
+    cancelReason: "PATIENT_REQUEST",
+    createdAt: "2025-03-28T16:30:00Z",
+    updatedAt: "2025-04-01T20:00:00Z",
+    therapist: {
+      name: "Dr. Emily Carter",
+      specialty: "Home Care Specialist",
+      avatarSrc: "assets/img/doctors/doctor-03.jpg",
+    },
+    sessionTypeLabel: "Home Session",
+    locationLabel: "Home Visit",
+    statusLabel: "Cancelled",
   },
 ];
 

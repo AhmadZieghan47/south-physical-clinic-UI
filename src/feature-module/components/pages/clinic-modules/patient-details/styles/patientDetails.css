@@ -102,6 +102,19 @@
   color: var(--text-muted);
   margin-bottom: 0.5rem;
 }
+.patient-balance {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+.balance-amount {
+  font-weight: 600;
+  color: var(--primary);
+}
+.balance-amount.negative {
+  color: #dc3545;
+}
+
 .book-btn {
   background: var(--primary);
   border-radius: var(--radius);

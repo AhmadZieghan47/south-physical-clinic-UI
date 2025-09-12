@@ -19,9 +19,9 @@ export function usePatientsTable(
       {
         title: "Name",
         dataIndex: "fullName",
-        render: (text: String) => (
+        render: (text: String, record: Patient) => (
           <Link
-            to={all_routes.patientDetails}
+            to={`${all_routes.patientDetails.replace(':id', record.id)}`}
             className="text-dark fw-semibold"
           >
             {text}

@@ -1,6 +1,6 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 
 import Wizard from "../../../core/components/Wizard/Wizard";
@@ -28,6 +28,7 @@ export default function PatientCreateWizard() {
       medical: {
         diagnoses: [],
         allergies: [],
+        medicalHistory: [],
         extraCare: false,
         hasInsurance: false,
       },
@@ -40,7 +41,29 @@ export default function PatientCreateWizard() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const steps = ["Personal", "Medical", "Insurance", "Attachments", "Review"];
+  // Watch the hasInsurance field to determine if insurance step should be shown
+  const hasInsurance = methods.watch("medical.hasInsurance");
+
+  // Dynamic steps array based on insurance requirement
+  const allSteps = ["Personal", "Medical", "Insurance", "Attachments", "Review"];
+  const steps = hasInsurance 
+    ? allSteps 
+    : allSteps.filter(step => step !== "Insurance");
+
+  // Handle step transitions when insurance requirement changes
+  useEffect(() => {
+    const currentStepName = steps[step];
+    
+    // If we're currently on the insurance step but insurance is disabled, move to next step
+    if (currentStepName === "Insurance" && !hasInsurance) {
+      setStep(step + 1);
+    }
+    // If insurance is enabled and we're on attachments step, we might need to adjust
+    else if (hasInsurance && currentStepName === "Attachments" && step === 2) {
+      // We're on attachments but should be on insurance, move back
+      setStep(step - 1);
+    }
+  }, [hasInsurance, step, steps]);
 
   const goNext = async () => {
     // validate current step only

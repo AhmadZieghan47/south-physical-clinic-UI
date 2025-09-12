@@ -7,7 +7,7 @@ import type {
   PlanStatusT,
   PlanTypeT,
   PriceBasisT,
-} from "../../../../../types/typedefs";
+} from "@/types/typedefs";
 
 export interface PlanRow {
   id?: string;

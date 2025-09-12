@@ -12,8 +12,7 @@ import media22 from "/assets/img/media/media-22.jpg";
 import media23 from "/assets/img/media/media-23.jpg";
 import media24 from "/assets/img/media/media-24.jpg";
 import React from "react";
-import ImageWithBasePath from "../../../../../../core/imageWithBasePath";
-8;
+import ImageWithBasePath from "@/core/imageWithBasePath";
 
 const SearchList = () => {
   const [open1, setOpen1] = React.useState(false);
