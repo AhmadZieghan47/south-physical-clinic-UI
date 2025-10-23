@@ -1,4 +1,3 @@
-
 import EmailVerificationBasic from "../components/auth/email-verification/emailVerificationBasic";
 import EmailVerificationCover from "../components/auth/email-verification/emailVerificationCover";
 import EmailVerificationIllustration from "../components/auth/email-verification/emailVerificationIllustration";
@@ -29,6 +28,7 @@ import ProfitAndLoss from "../components/pages/administration-modules/reports/pr
 import DeleteAccountRequest from "../components/pages/administration-modules/users/delete-account-request/deleteAccountRequest";
 import Permissions from "../components/pages/administration-modules/users/permissions/permissions";
 import RolesAndPermissions from "../components/pages/administration-modules/users/roles-and-permissions/rolesAndPermissions";
+import AuditLogs from "../components/pages/clinic-modules/audit-logs/auditLogs";
 import Calendars from "../components/pages/application-modules/application/calendar/calendar";
 import CallHistory from "../components/pages/application-modules/application/calls/callHistory";
 import IncomingCall from "../components/pages/application-modules/application/calls/incomingCall";
@@ -54,8 +54,11 @@ import AddDoctor from "../components/pages/clinic-modules/add-doctor/addDoctor";
 import AppointmentCalendar from "../components/pages/clinic-modules/appointment-calendar/appointmentCalendar";
 import AppointmentConsultations from "../components/pages/clinic-modules/appointment-consultations/appointmentConsultations";
 import Appointments from "../components/pages/clinic-modules/appointments/appointments";
+import OverbookingQueue from "../components/pages/clinic-modules/overbooking-queue/overbookingQueue";
 import Assets from "../components/pages/clinic-modules/assets/assets";
 import CreatePatient from "../components/pages/clinic-modules/create-patient/createPatient";
+import BeginTreatmentWizard from "../components/pages/clinic-modules/begin-treatment/BeginTreatmentWizard";
+import DiscountManagementDashboard from "../components/pages/clinic-modules/admin/DiscountManagementDashboard";
 import DoctorDetails from "../components/pages/clinic-modules/doctor-details/doctorDetails";
 import DoctorsList from "../components/pages/clinic-modules/doctors-list/doctorsList";
 import Doctors from "../components/pages/clinic-modules/doctors/doctors";
@@ -64,7 +67,7 @@ import EditPatient from "../components/pages/clinic-modules/edit-patient/editPat
 import Locations from "../components/pages/clinic-modules/locations/locations";
 import Messages from "../components/pages/clinic-modules/messages/messages";
 import NewAppointment from "../components/pages/clinic-modules/new-appointment/newAppointment";
-import PatientDetails from "../components/pages/clinic-modules/patient-details/patientDetails";
+import PatientDetails from "../components/pages/clinic-modules/patient-details/PatientDetailsPage";
 import PatientsGrid from "../components/pages/clinic-modules/patients-grid/patientsGrid";
 import Patients from "../components/pages/clinic-modules/patients/patients";
 import Services from "../components/pages/clinic-modules/services/services";
@@ -240,6 +243,9 @@ import UiLightboxes from "../components/pages/ui-modules/ui-interface/ui-advance
 import UiRangeSlides from "../components/pages/ui-modules/ui-interface/ui-advance/uiRangeslider";
 import UiRating from "../components/pages/ui-modules/ui-interface/ui-advance/uiRating";
 import UiScrollbar from "../components/pages/ui-modules/ui-interface/ui-advance/uiScrollbar";
+import ErrorDisplayExamples from "../../examples/ErrorDisplayExamples";
+import ErrorDisplayTestSuite from "../../examples/ErrorDisplayTestSuite";
+import ReceptionDashboard from "../../examples/ReceptionDashboard";
 import { all_routes } from "./all_routes";
 import { Navigate, Route } from "react-router";
 
@@ -290,6 +296,21 @@ export const publicRoutes = [
   {
     path: routes.layoutRTL,
     element: <Dashboard />,
+    route: Route,
+  },
+  {
+    path: routes.receptionDashboard,
+    element: <ReceptionDashboard />,
+    route: Route,
+  },
+  {
+    path: routes.errorDisplayExamples,
+    element: <ErrorDisplayExamples />,
+    route: Route,
+  },
+  {
+    path: routes.errorDisplayTestSuite,
+    element: <ErrorDisplayTestSuite />,
     route: Route,
   },
   {
@@ -535,6 +556,16 @@ export const publicRoutes = [
   {
     path: routes.createPatient,
     element: <CreatePatient />,
+    route: Route,
+  },
+  {
+    path: routes.beginTreatment,
+    element: <BeginTreatmentWizard />,
+    route: Route,
+  },
+  {
+    path: routes.discountManagement,
+    element: <DiscountManagementDashboard />,
     route: Route,
   },
   {
@@ -1088,6 +1119,11 @@ export const publicRoutes = [
     route: Route,
   },
   {
+    path: routes.auditLogs,
+    element: <AuditLogs />,
+    route: Route,
+  },
+  {
     path: routes.doctorScheduleClini,
     element: <DoctorSchedules />,
     route: Route,
@@ -1313,8 +1349,18 @@ export const publicRoutes = [
     route: Route,
   },
   {
+    path: `${routes.newAppointment}/:patientId`,
+    element: <NewAppointment />,
+    route: Route,
+  },
+  {
     path: routes.appointmentCalendar,
     element: <AppointmentCalendar />,
+    route: Route,
+  },
+  {
+    path: routes.overbookingQueue,
+    element: <OverbookingQueue />,
     route: Route,
   },
   {

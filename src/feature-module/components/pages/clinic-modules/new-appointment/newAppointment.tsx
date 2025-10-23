@@ -1,226 +1,224 @@
-import { Link } from "react-router";
-import { all_routes } from "../../../../routes/all_routes";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
+
+import Wizard from "@/core/components/Wizard/Wizard";
+import StepPatient from "./steps/StepPatient";
+import StepDetails from "./steps/StepDetails";
+import StepReview from "./steps/StepReview";
+
+import { appointmentFormSchema, type AppointmentFormData } from "./schema";
+import { createAppointment } from "./api";
 import {
-  Appointment_Type,
-  Department,
-  Doctor,
-  Patient,
-  Status_Checkout,
-} from "../../../../../core/common/selectOption";
-import CommonSelect from "../../../../../core/common/common-select/commonSelect";
-import { DatePicker, TimePicker, type TimePickerProps } from "antd";
-import dayjs from "dayjs";
-import Modals from "./modals/modals";
+  useFormErrorHandling,
+  useErrorToast,
+} from "../../../../../hooks/useErrorHandling";
+import {
+  SmartError,
+  ErrorBoundary,
+} from "../../../../../components/ErrorDisplay";
 
-const NewAppointment = () => {
-  const getModalContainer = () => {
-    const modalElement = document.getElementById("modal-datepicker");
-    return modalElement ? modalElement : document.body; // Fallback to document.body if modalElement is null
+export default function NewAppointment() {
+  const navigate = useNavigate();
+  const { patientId: urlPatientId } = useParams<{ patientId?: string }>();
+  const [isPatientPreSelected, setIsPatientPreSelected] = useState(false);
+
+  const methods = useForm<AppointmentFormData>({
+    resolver: zodResolver(appointmentFormSchema) as any,
+    mode: "onSubmit",
+    reValidateMode: "onBlur",
+    defaultValues: {
+      patientId: "",
+      patientName: "",
+      planId: "",
+      planName: "",
+      therapistId: "",
+      therapistName: "",
+      appointmentDate: "",
+      startTime: "",
+      endTime: "",
+      sessionType: "REGULAR",
+      location: "CLINIC",
+      noteEn: "",
+      noteAr: "",
+      status: "BOOKED",
+    },
+  });
+
+  const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  // Handle patient pre-selection from URL parameter
+  useEffect(() => {
+    if (urlPatientId) {
+      setIsPatientPreSelected(true);
+      methods.setValue("patientId", urlPatientId);
+      // We'll let the StepPatient component handle fetching and setting the patient name
+    }
+  }, [urlPatientId, methods]);
+
+  // Enhanced error handling
+  const { generalError, clearAllErrors, handleFormError } =
+    useFormErrorHandling({
+      context: {
+        component: "NewAppointment",
+        action: "create_appointment",
+      },
+    });
+
+  // Error toast notifications
+  const { showError } = useErrorToast({
+    autoHide: true,
+    duration: 5000,
+    maxToasts: 3,
+  });
+
+  const steps = ["Patient", "Details", "Review"];
+
+  const goNext = async () => {
+    const currentStepName = steps[step];
+    let fieldsToValidate: (keyof AppointmentFormData)[] = [];
+
+    switch (currentStepName) {
+      case "Patient":
+        fieldsToValidate = ["patientId"];
+        break;
+      case "Details":
+        fieldsToValidate = [
+          "planId",
+          "therapistId",
+          "appointmentDate",
+          "startTime",
+          "sessionType",
+          "location",
+        ];
+        break;
+      case "Review":
+        fieldsToValidate = [
+          "patientId",
+          "planId",
+          "therapistId",
+          "appointmentDate",
+          "startTime",
+          "sessionType",
+          "location",
+        ];
+        break;
+    }
+
+    // Manual validation for current step
+    const currentValues = methods.getValues();
+    let isValid = true;
+
+    for (const fieldPath of fieldsToValidate) {
+      const value = currentValues[fieldPath];
+      if (!value || (typeof value === "string" && value.trim() === "")) {
+        methods.setError(fieldPath, {
+          type: "manual",
+          message: `Please provide ${fieldPath
+            .replace(/([A-Z])/g, " $1")
+            .toLowerCase()}`,
+        });
+        isValid = false;
+      }
+    }
+
+    // Auto-calculate end time if start time is provided
+    if (currentStepName === "Details" || currentStepName === "Review") {
+      const startTime = currentValues.startTime;
+      if (startTime && !currentValues.endTime) {
+        const start = new Date(`2000-01-01T${startTime}`);
+        const end = new Date(start.getTime() + 60 * 60 * 1000); // Add 1 hour
+        const endTime = end.toTimeString().slice(0, 5); // Format as HH:mm
+        methods.setValue("endTime", endTime);
+      }
+    }
+
+    if (isValid) {
+      const nextStep = Math.min(step + 1, steps.length - 1);
+      setStep(nextStep);
+    } else {
+      methods.trigger();
+    }
   };
 
-  const onChangeTime: TimePickerProps["onChange"] = (time, timeString) => {
-    console.log(time, timeString);
+  const goBack = () => {
+    const prevStep = Math.max(step - 1, 0);
+    setStep(prevStep);
   };
+
+  const finish = methods.handleSubmit(async (values) => {
+    setLoading(true);
+    clearAllErrors();
+
+    try {
+      // Convert form data to API format and create appointment
+      await createAppointment(values);
+
+      // Navigate to appointments list with success message
+      navigate("/appointments", {
+        state: {
+          message: "Appointment created successfully!",
+          type: "success",
+        },
+      });
+    } catch (error) {
+      handleFormError(error);
+      if (error && typeof error === "object" && "error" in error) {
+        showError(error as any);
+      }
+    } finally {
+      setLoading(false);
+    }
+  });
+
   return (
-    <>
-      {/* ========================
-			Start Page Content
-		========================= */}
-      <div className="page-wrapper">
-        {/* Start Content */}
-        <div className="content">
-          {/* row start */}
-          <div className="row justify-content-center">
+    <ErrorBoundary>
+      <FormProvider {...methods}>
+        <div className="page-wrapper">
+          <div className="content d-flex justify-content-center">
             <div className="col-lg-10">
-              {/* page header start */}
               <div className="mb-4">
                 <h6 className="fw-bold mb-0 d-flex align-items-center">
-                  <Link to={all_routes.appointments} className="text-dark">
-                    <i className="ti ti-chevron-left me-1" />
-                    Appointments
-                  </Link>
+                  <i className="ti ti-calendar-plus me-2" />
+                  Create New Appointment
                 </h6>
               </div>
-              {/* page header end */}
-              {/* card start */}
-              <div className="card">
-                <div className="card-body">
-                  <div className="form">
-                    <div className="mb-3">
-                      <label className="form-label mb-1 fw-medium">
-                        Appointment ID
-                        <span className="text-danger ms-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        defaultValue="AP234354"
-                        disabled
-                      />
-                    </div>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <div className="d-flex align-items-center justify-content-between mb-1">
-                            <label className="form-label mb-0 fw-medium">
-                              Patient<span className="text-danger ms-1">*</span>
-                            </label>
-                            <Link
-                              to="#"
-                              className="link-primary"
-                              data-bs-toggle="modal"
-                              data-bs-target="#add_modal"
-                            >
-                              <i className="ti ti-circle-plus me-1" />
-                              Add New
-                            </Link>
-                          </div>
-                          <CommonSelect
-                            options={Patient}
-                            className="select"
-                            defaultValue={Patient[0]}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Department
-                            <span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={Department}
-                            className="select"
-                            defaultValue={Department[0]}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Doctor<span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={Doctor}
-                            className="select"
-                            defaultValue={Doctor[0]}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Appointment Type
-                            <span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={Appointment_Type}
-                            className="select"
-                            defaultValue={Appointment_Type[0]}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Date of Appointment
-                            <span className="text-danger ms-1">*</span>
-                          </label>
-                          <div className="input-icon-end position-relative">
-                            <DatePicker
-                              className="form-control datetimepicker"
-                              format={{
-                                format: "DD-MM-YYYY",
-                                type: "mask",
-                              }}
-                              getPopupContainer={getModalContainer}
-                              placeholder="DD-MM-YYYY"
-                              suffixIcon={null}
-                            />
-                            <span className="input-icon-addon">
-                              <i className="ti ti-calendar" />
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Time<span className="text-danger ms-1">*</span>
-                          </label>
-                          <div className="input-icon-end position-relative">
-                            <TimePicker
-                              className="form-control"
-                              onChange={onChangeTime}
-                              defaultOpenValue={dayjs("00:00:00", "HH:mm:ss")}
-                            />
-                            <span className="input-icon-addon">
-                              <i className="ti ti-clock text-gray-7" />
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label mb-1 fw-medium">
-                        Appointment Reason
-                        <span className="text-danger ms-1">*</span>
-                      </label>
-                      <textarea
-                        className="form-control"
-                        rows={3}
-                        defaultValue={""}
-                      />
-                    </div>
-                    <div className="mb-0">
-                      <label className="form-label mb-1 fw-medium">
-                        Status<span className="text-danger ms-1">*</span>
-                      </label>
-                      <CommonSelect
-                        options={Status_Checkout}
-                        className="select"
-                        defaultValue={Status_Checkout[0]}
-                      />
-                    </div>
-                  </div>
+
+              {/* General Error Display */}
+              {generalError && (
+                <div className="mb-4">
+                  <SmartError
+                    error={generalError}
+                    onDismiss={clearAllErrors}
+                    showSuggestions={true}
+                    showRetryButton={false}
+                  />
                 </div>
-              </div>
-              {/* card end */}
-              <div className="d-flex align-items-center justify-content-end">
-                <Link to="#" className="btn btn-light me-2">
-                  Cancel
-                </Link>
-                <Link to="#" className="btn btn-primary">
-                  Create Appointment
-                </Link>
-              </div>
+              )}
+
+              <Wizard
+                steps={steps}
+                activeStep={step}
+                onBack={goBack}
+                onNext={goNext}
+                onFinish={finish}
+                loading={loading}
+              >
+                {steps[step] === "Patient" && (
+                  <StepPatient
+                    isPreSelected={isPatientPreSelected}
+                    preSelectedPatientId={urlPatientId}
+                  />
+                )}
+                {steps[step] === "Details" && <StepDetails />}
+                {steps[step] === "Review" && <StepReview />}
+              </Wizard>
             </div>
           </div>
-          {/* row end */}
         </div>
-        {/* End Content */}
-        {/* Footer Start */}
-        <div className="footer text-center bg-white p-2 border-top">
-          <p className="text-dark mb-0">
-            2025 ©
-            <Link to="#" className="link-primary">
-              Preclinic
-            </Link>
-            , All Rights Reserved
-          </p>
-        </div>
-        {/* Footer End */}
-      </div>
-      {/* ========================
-			End Page Content
-		========================= */}
-      <Modals />
-    </>
+      </FormProvider>
+    </ErrorBoundary>
   );
-};
-
-export default NewAppointment;
+}

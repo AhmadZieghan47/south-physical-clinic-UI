@@ -1,287 +1,214 @@
+import { FormProvider, useForm, type Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Link } from "react-router";
-import { all_routes } from "../../../../routes/all_routes";
-import {
-  Blood_Group,
-  City,
-  Country,
-  Gender,
-  Primary_Doctor,
-  State,
-  Status,
-} from "../../../../../core/common/selectOption";
-import CommonSelect from "../../../../../core/common/common-select/commonSelect";
-import { DatePicker } from "antd";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
+import { useNavigate } from "react-router";
 
-const CreatePatient = () => {
-  const [phone, setPhone] = useState<string | undefined>()
-  const getModalContainer = () => {
-    const modalElement = document.getElementById("modal-datepicker");
-    return modalElement ? modalElement : document.body; // Fallback to document.body if modalElement is null
+import Wizard from "@/core/components/Wizard/Wizard";
+import { useFormErrorHandling, useErrorToast } from "@/hooks/useErrorHandling";
+import { SmartError, ErrorBoundary } from "@/components/ErrorDisplay";
+import StepPersonal from "./steps/StepPersonal";
+import StepMedical from "./steps/StepMedical";
+import StepAttachments from "./steps/StepAttachments";
+import StepReview from "./steps/StepReview";
+import { fullSchema, type FullPayload } from "./schema";
+import { createPatient, upsertInsurance, uploadAttachments } from "./api";
+
+export default function CreatePatient() {
+  const navigate = useNavigate();
+  const methods = useForm<FullPayload>({
+    resolver: zodResolver(fullSchema) as Resolver<FullPayload>,
+    mode: "onSubmit", // Use onSubmit mode to prevent premature validation
+    reValidateMode: "onBlur", // Re-validate on blur
+    defaultValues: {
+      personal: {
+        firstName: "",
+        lastName: "",
+        phone: "",
+        dob: "",
+        gender: "MALE",
+        bloodGroup: "O+",
+        nationalId: "",
+      },
+      medical: {
+        medicalHistory: [],
+        orthopedicImplants: [],
+        extraCare: false,
+        hasInsurance: false,
+      },
+      insurance: {},
+      attachments: { files: [] as any },
+    },
+  });
+
+  const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  // Enhanced error handling - only for API errors, not form validation
+  const { generalError, clearAllErrors, handleFormError } =
+    useFormErrorHandling({
+      context: {
+        component: "CreatePatient",
+        action: "create_patient",
+      },
+    });
+
+  // Error toast notifications
+  const { showError } = useErrorToast({
+    autoHide: true,
+    duration: 5000,
+    maxToasts: 3,
+  });
+
+  // Static steps array - insurance is now part of personal step
+  const steps = [
+    "Personal",
+    "Medical", 
+    "Attachments",
+    "Review",
+  ];
+
+  // No longer needed - insurance is part of personal step
+
+  const goNext = async () => {
+    const currentStepName = steps[step];
+    let fieldsToValidate: string[] = [];
+    let isValid = true;
+
+    switch (currentStepName) {
+      case "Personal":
+        fieldsToValidate = [
+          "personal.firstName",
+          "personal.lastName",
+          "personal.phone",
+          "personal.dob",
+          "personal.gender",
+          "medical.hasInsurance",
+          // Include insurance fields when hasInsurance is true
+          "insurance.insurerCompany",
+          "insurance.coveragePercent",
+        ];
+        break;
+      case "Medical":
+        fieldsToValidate = [
+          "medical.medicalHistory",
+          "medical.orthopedicImplants",
+          "medical.extraCare",
+        ];
+        break;
+      case "Attachments":
+        fieldsToValidate = ["attachments.files"];
+        break;
+      case "Review":
+        // For review, run a full form validation using trigger() without args
+        fieldsToValidate = [];
+        break;
+    }
+
+    // Use resolver-driven validation for all steps
+    try {
+      if (currentStepName === "Review") {
+        // Full form validation
+        isValid = await methods.trigger();
+      } else {
+        isValid = await methods.trigger(fieldsToValidate as any);
+      }
+    } catch (error: any) {
+      isValid = false;
+    }
+
+    if (isValid) {
+      // Clear stale errors only after successful validation
+      methods.clearErrors();
+      const nextStep = Math.min(step + 1, steps.length - 1);
+      setStep(nextStep);
+    }
+    // If not valid, the errors are already set above
   };
+
+  const goBack = () => {
+    const prevStep = Math.max(step - 1, 0);
+    setStep(prevStep);
+  };
+
+  const finish = methods.handleSubmit(async (values) => {
+    setLoading(true);
+    clearAllErrors();
+
+    try {
+      // Create patient
+      const { id: patientId } = await createPatient(
+        values.personal,
+        values.medical
+      );
+
+      // Create insurance profile only if hasInsurance is true
+      if (values.medical.hasInsurance) {
+        await upsertInsurance(patientId, values.insurance);
+      }
+
+      // Upload attachments only if files are selected
+      if (values.attachments?.files && values.attachments.files.length > 0) {
+        await uploadAttachments(
+          patientId,
+          values.attachments.files.map((x: any) => x.file)
+        );
+      }
+
+      // Navigate to patient details page
+      navigate(`/patient-details/${patientId}`);
+    } catch (error) {
+      // Only handle API errors here, not form validation errors
+      handleFormError(error);
+
+      if (error && typeof error === "object" && "error" in error) {
+        showError(error as any);
+      }
+    } finally {
+      setLoading(false);
+    }
+  });
+
   return (
-    <>
-      {/* ========================
-			Start Page Content
-		========================= */}
-      <div className="page-wrapper">
-        {/* Start Content */}
-        <div className="content">
-          {/* row start */}
-          <div className="row justify-content-center">
-            <div className="col-lg-10">
-              {/* page header start */}
+    <ErrorBoundary>
+      <FormProvider {...methods}>
+        <div className="page-wrapper">
+          <div className="content d-flex justify-content-center">
+            <div className="col-lg-12">
               <div className="mb-4">
                 <h6 className="fw-bold mb-0 d-flex align-items-center">
-                  <Link to={all_routes.patients} className="text-dark">
-                    <i className="ti ti-chevron-left me-1" />
-                    Patients
-                  </Link>
+                  Create Patient
                 </h6>
               </div>
-              {/* page header end */}
-              {/* card start */}
-              <div className="card">
-                <div className="card-body pb-0">
-                  <div className="form">
-                    <h6 className="fw-bold mb-3">Patient Information</h6>
-                    <div className="row">
-                      <div className="col-lg-12">
-                        <div className="mb-3 d-flex align-items-center">
-                          <label className="form-label mb-0">
-                            Profile Image
-                          </label>
-                          <div className="drag-upload-btn avatar avatar-xxl rounded-circle bg-light text-muted position-relative overflow-hidden z-1 mb-2 ms-4 p-0">
-                            <i className="ti ti-user-plus fs-16" />
-                            <input
-                              type="file"
-                              className="form-control image-sign"
-                              multiple
-                            />
-                            <div className="position-absolute bottom-0 end-0 star-0 w-100 h-25 bg-dark d-flex align-items-center justify-content-center z-n1">
-                              <Link
-                                to="#"
-                                className="text-white d-flex align-items-center justify-content-center"
-                              >
-                                <i className="ti ti-photo fs-14" />
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            First Name
-                            <span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Last Name<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Phone Number
-                            <span className="text-danger ms-1">*</span>
-                          </label>
-                          <PhoneInput
-                            defaultCountry="US"
-                            value={phone}
-                            onChange={setPhone}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Email Address
-                            <span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="email" className="form-control" />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Primary Doctor
-                            <span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={Primary_Doctor}
-                            className="select"
-                            defaultValue={Primary_Doctor[0]}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            DOB<span className="text-danger ms-1">*</span>
-                          </label>
-                          <div className="input-icon-end position-relative">
-                            <DatePicker
-                              className="form-control datetimepicker"
-                              format={{
-                                format: "DD-MM-YYYY",
-                                type: "mask",
-                              }}
-                              getPopupContainer={getModalContainer}
-                              placeholder="DD-MM-YYYY"
-                              suffixIcon={null}
-                            />
-                            <span className="input-icon-addon">
-                              <i className="ti ti-calendar" />
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Gender<span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={Gender}
-                            className="select"
-                            defaultValue={Gender[0]}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Blood Group
-                            <span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={Blood_Group}
-                            className="select"
-                            defaultValue={Blood_Group[0]}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Status<span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={Status}
-                            className="select"
-                            defaultValue={Status[0]}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <h6 className="fw-bold mb-3 border-top pt-3">
-                      Address Information
-                    </h6>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Address 1<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1 fw-medium">
-                            Address 2<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                      </div>
-                      <div className="col-lg-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1">
-                            Country<span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={Country}
-                            className="select"
-                            defaultValue={Country[0]}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1">
-                            State<span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={State}
-                            className="select"
-                            defaultValue={State[0]}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1">
-                            City<span className="text-danger ms-1">*</span>
-                          </label>
-                          <CommonSelect
-                            options={City}
-                            className="select"
-                            defaultValue={City[0]}
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-6">
-                        <div className="mb-3">
-                          <label className="form-label mb-1">
-                            Pincode<span className="text-danger ms-1">*</span>
-                          </label>
-                          <input type="text" className="form-control" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
+              {/* General Error Display */}
+              {generalError && (
+                <div className="mb-4">
+                  <SmartError
+                    error={generalError}
+                    onDismiss={clearAllErrors}
+                    showSuggestions={true}
+                    showRetryButton={false}
+                  />
                 </div>
-              </div>
-              {/* card end */}
-              <div className="d-flex align-items-center justify-content-end">
-                <Link to="#" className="btn btn-light me-2">
-                  Cancel
-                </Link>
-                <Link to="#" className="btn btn-primary">
-                  Add New Patient
-                </Link>
-              </div>
+              )}
+
+              <Wizard
+                steps={steps}
+                activeStep={step}
+                onBack={goBack}
+                onNext={goNext}
+                onFinish={finish}
+                loading={loading}
+              >
+                {steps[step] === "Personal" && <StepPersonal />}
+                {steps[step] === "Medical" && <StepMedical />}
+                {steps[step] === "Attachments" && <StepAttachments />}
+                {steps[step] === "Review" && <StepReview />}
+              </Wizard>
             </div>
           </div>
-          {/* row end */}
         </div>
-        {/* End Content */}
-        {/* Footer Start */}
-        <div className="footer text-center bg-white p-2 border-top">
-          <p className="text-dark mb-0">
-            2025 ©
-            <Link to="#" className="link-primary">
-              Preclinic
-            </Link>
-            , All Rights Reserved
-          </p>
-        </div>
-        {/* Footer End */}
-      </div>
-      {/* ========================
-			End Page Content
-		========================= */}
-    </>
+      </FormProvider>
+    </ErrorBoundary>
   );
-};
-
-export default CreatePatient;
+}

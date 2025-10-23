@@ -1,48 +1,74 @@
-import axios from "axios";
 import { Link } from "react-router";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import { all_routes } from "../../../routes/all_routes";
 import ImageWithBasePath from "../../../../core/imageWithBasePath";
+import { login } from "../../../../services/authService";
 
-import "./login.css"
+import "./login.css";
 
-const handleSubmit = async (event: any) => {
-  // No refresh on submit
-  event.preventDefault();
+// Login form schema
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
-  // Get form fields
-  const username = event.target.username.value;
-  const password = event.target.password.value;
-
-  try {
-    const login = await axios.post('http://localhost:3000/api/v1/auth/login', { email: username, password })
-    console.log(login)
-  } catch (error) {
-    console.log('response start', JSON.stringify(error), 'response end')
-  }
-  console.log(`username: ${username}`)
-  console.log(`password: ${password}`)
-}
+type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [passwordVisibility, setPasswordVisibility] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    const togglePasswordVisibility = () => {
-      setPasswordVisibility((prevState) => !prevState);
-    };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onBlur",
+  });
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility((prevState) => !prevState);
+  };
+
+  const onSubmit = async (data: LoginFormData) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await login(data.email, data.password);
+
+      console.log("Login successful:", response);
+
+      // Auth service automatically stores token and user data
+      // Redirect to dashboard
+      window.location.href = "/dashboard";
+    } catch (error: any) {
+      console.error("Login failed:", error);
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Login failed. Please check your credentials and try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
-      {/* Start Content */}
       <div className="container-fuild position-relative z-1">
         <div className="w-100 overflow-hidden position-relative flex-wrap d-block vh-100">
-          {/* start row */}
           <div className="row justify-content-center align-items-center vh-100 overflow-auto flex-wrap py-3">
             <div className="col-lg-4 mx-auto">
               <form
                 className="d-flex justify-content-center align-items-center"
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onSubmit)}
               >
                 <div className="d-flex flex-column justify-content-lg-center p-4 p-lg-0 pb-0 flex-fill">
                   <div className=" mx-auto mb-4 text-center w-25 h-25">
@@ -56,10 +82,13 @@ const Login = () => {
                     <div className="card-body login-card">
                       <div className="text-center mb-3">
                         <h5 className="mb-1 fs-20 fw-bold">Sign In</h5>
-                        {/* <p className="mb-0">
-                          Please enter below details to access the dashboard
-                        </p> */}
                       </div>
+                      {error && (
+                        <div className="alert alert-danger" role="alert">
+                          {error}
+                        </div>
+                      )}
+
                       <div className="mb-3">
                         <label className="form-label">Email Address</label>
                         <div className="input-group">
@@ -67,12 +96,19 @@ const Login = () => {
                             <i className="ti ti-mail fs-14 text-dark" />
                           </span>
                           <input
-                            type="text"
-                            name="username"
-                            className="form-control border-start-0 ps-0"
+                            type="email"
+                            className={`form-control ${
+                              errors.email ? "is-invalid" : ""
+                            }`}
                             placeholder="Enter Email Address"
+                            {...register("email")}
                           />
                         </div>
+                        {errors.email && (
+                          <div className="invalid-feedback d-block">
+                            {errors.email.message}
+                          </div>
+                        )}
                       </div>
                       <div className="mb-3">
                         <label className="form-label">Password</label>
@@ -82,20 +118,28 @@ const Login = () => {
                               <i className="ti ti-lock text-dark fs-14" />
                             </span>
                             <input
-                              name="password"
-                              type={
-                                passwordVisibility
-                                  ? "password"
-                                  : "text"
-                              }
-                              className="pass-input form-control ps-0 border-0"
+                              type={passwordVisibility ? "text" : "password"}
+                              className={`pass-input form-control border-0 ${
+                                errors.password ? "is-invalid" : ""
+                              }`}
                               placeholder="****************"
+                              {...register("password")}
                             />
                             <span className="input-group-text bg-white border-0">
-                              <i className={`ti toggle-password ti-eye${passwordVisibility ? "-off" : ""} text-dark fs-14`} onClick={togglePasswordVisibility} />
+                              <i
+                                className={`ti toggle-password ti-eye${
+                                  passwordVisibility ? "-off" : ""
+                                } text-dark fs-14`}
+                                onClick={togglePasswordVisibility}
+                              />
                             </span>
                           </div>
                         </div>
+                        {errors.password && (
+                          <div className="invalid-feedback d-block">
+                            {errors.password.message}
+                          </div>
+                        )}
                       </div>
                       <div className="d-flex align-items-center justify-content-between mb-3">
                         <div className="d-flex align-items-center">
@@ -123,77 +167,33 @@ const Login = () => {
                         </div>
                       </div>
                       <div className="mb-2">
-                        <button type="submit" className="btn btn-primary w-100">Login</button>
+                        <button
+                          type="submit"
+                          className="btn btn-primary w-100"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+                              <span
+                                className="spinner-border spinner-border-sm me-2"
+                                role="status"
+                                aria-hidden="true"
+                              ></span>
+                              Signing In...
+                            </>
+                          ) : (
+                            "Login"
+                          )}
+                        </button>
                       </div>
-                      {/* <div className="login-or position-relative mb-3">
-                        <span className="span-or">OR</span>
-                      </div> */}
-                      {/* <div className="mb-3">
-                        <div className="d-flex align-items-center justify-content-center flex-wrap">
-                          <div className="text-center me-2 flex-fill">
-                            <Link
-                              to="#"
-                              className="br-10 p-1 btn btn-outline-light border d-flex align-items-center justify-content-center"
-                            >
-                              <ImageWithBasePath
-                                className="img-fluid m-1"
-                                src="assets/img/icons/facebook-logo.svg"
-                                alt="Facebook"
-                              />
-                            </Link>
-                          </div>
-                          <div className="text-center me-2 flex-fill">
-                            <Link
-                              to="#"
-                              className="br-10 p-1 btn btn-outline-light border d-flex align-items-center justify-content-center"
-                            >
-                              <ImageWithBasePath
-                                className="img-fluid m-1"
-                                src="assets/img/icons/google-logo.svg"
-                                alt="Google"
-                              />
-                            </Link>
-                          </div>
-                          <div className="text-center me-2 flex-fill">
-                            <Link
-                              to="#"
-                              className="br-10 p-1 btn btn-outline-light border d-flex align-items-center justify-content-center"
-                            >
-                              <ImageWithBasePath
-                                className="img-fluid m-1"
-                                src="assets/img/icons/apple-logo.svg"
-                                alt="apple"
-                              />
-                            </Link>
-                          </div>
-                        </div>
-                      </div> */}
-                      {/* <div className="text-center">
-                        <h6 className="fw-normal fs-14 text-dark mb-0">
-                          Don’t have an account yet?
-                          <Link to={all_routes.registerbasic} className="hover-a">
-                            
-                            Register
-                          </Link>
-                        </h6>
-                      </div> */}
                     </div>
-                    {/* end card body */}
                   </div>
-                  {/* end card */}
                 </div>
               </form>
-              {/* <p className="text-dark text-center">
-                
-                Copyright © 2025 - Preclinic
-              </p> */}
             </div>
-            {/* end col */}
           </div>
-          {/* end row */}
         </div>
       </div>
-      {/* End Content */}
     </>
   );
 };

@@ -12,6 +12,7 @@ import "../src/style/css/feather.css";
 import "../node_modules/@tabler/icons-webfont/dist/tabler-icons.css";
 import "../node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
+import "../src/style/css/style.css";
 import "../src/index.scss";
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

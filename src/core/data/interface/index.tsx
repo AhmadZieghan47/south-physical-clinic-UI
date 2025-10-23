@@ -8,7 +8,7 @@ export interface TableData {
   by: any;
   plan_type: any;
   //new
-  
+
   //old
   Apr: any;
   Mar: any;
@@ -76,7 +76,7 @@ export interface TableData {
   planType: any;
   providerName: any;
   invoiceNumber: any;
-  method:string;
+  method: string;
   incomeName: any;
   attendance: any;
   notes: any;
@@ -248,52 +248,51 @@ export interface TableData {
   amount: any;
   invoiceNo: any;
   paymentMethod: any;
-  feesGroup:string;
-  feesCode:string;
-  present:string;
-  absent:string;
-  percentange:string;
-  absentPercentange:string;
-  feesType:string;
-  fineType:string;
-  fineAmount:string;
-  admNo:string;
-  lastDate:string;
-  student:string;
-  cardNo:string;
-  fname:string;
-  bookName:string;
-  bookNo:string;
-  publisher:string;
-  author:string;
-  rackNo:string;
-  qty:string;
-  available:string;
-  price:string;
-  postDate:string;
-  dateofIssue:string;
-  issueTo:string;
-  booksIssued:string;
-  bookReturned:string;
-  issueRemarks:string;
-  year:string;
-  coachName:string;
-  sports:string;
-  hostelName:string;
-  hostelType:string;
-  address:string;
-  inTake:string;
-  roomType:string;
-  routes:string;
-  pickupPoint:string;
-  vehicleNo:string;
-  gps:string;
-  chassisNo:string;
-  registrationNo:string;
-  madeofYear:string;
-  vehicleModel:string;
-  key:string;
-
+  feesGroup: string;
+  feesCode: string;
+  present: string;
+  absent: string;
+  percentange: string;
+  absentPercentange: string;
+  feesType: string;
+  fineType: string;
+  fineAmount: string;
+  admNo: string;
+  lastDate: string;
+  student: string;
+  cardNo: string;
+  fname: string;
+  bookName: string;
+  bookNo: string;
+  publisher: string;
+  author: string;
+  rackNo: string;
+  qty: string;
+  available: string;
+  price: string;
+  postDate: string;
+  dateofIssue: string;
+  issueTo: string;
+  booksIssued: string;
+  bookReturned: string;
+  issueRemarks: string;
+  year: string;
+  coachName: string;
+  sports: string;
+  hostelName: string;
+  hostelType: string;
+  address: string;
+  inTake: string;
+  roomType: string;
+  routes: string;
+  pickupPoint: string;
+  vehicleNo: string;
+  gps: string;
+  chassisNo: string;
+  registrationNo: string;
+  madeofYear: string;
+  vehicleModel: string;
+  key: string;
 }
 export interface status {
   text: string;
@@ -304,7 +303,19 @@ export interface DatatableProps {
   columns: any[]; // You can replace `any[]` with the specific type of columns you expect
   dataSource: any[]; // You can replace `any[]` with the specific type of dataSource you expect
   Selection?: boolean | undefined;
-  searchText: string; 
+  searchText: string;
+  rowClassName?: (record: any, index: number) => string;
+  onRow?: (record: any) => {
+    onClick?: () => void;
+    style?: React.CSSProperties;
+  };
+  pagination?: {
+    serverSide?: boolean;
+    current?: number;
+    pageSize?: number;
+    total?: number;
+    onChange?: (page: number, pageSize?: number) => void;
+  };
 }
 
 export interface CountriesData {

@@ -1,2 +1,2 @@
-export const base_path ='/react/template'
-export const img_path ='/react/template/'
+export const base_path = import.meta.env.BASE_URL || '/'
+export const img_path = ''
