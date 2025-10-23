@@ -110,11 +110,14 @@ export const all_routes = {
   patients: "/patients",
   patientsGrid: "/patients-grid",
   editPatient: "/edit-patient",
-  patientDetails: "/patient-details",
+  patientDetails: "/patient-details/:id",
   createPatient: "/create-patient",
+  beginTreatment: "/begin-treatment/:patientId",
+  discountManagement: "/admin/discount-management",
   appointments: "/appointments",
   newAppointment: "/new-appointment",
   appointmentCalendar: "/appointment-calendar",
+  overbookingQueue: "/overbooking-queue",
   locations: "/locations",
   services: "/services",
   specializations: "/specializations",
@@ -154,6 +157,7 @@ export const all_routes = {
   profitloss: "/profit-and-loss",
   appointmentReport: "/appointment-report",
   patientReport: "/patient-report",
+  auditLogs: "/audit-logs",
 
   //Content Page routes
   pages: "/pages",
@@ -304,4 +308,9 @@ export const all_routes = {
   formPickers: "/form-pickers",
   formWizard: "/form-wizard",
   formMask: "/form-mask",
+
+  //Development/Testing routes
+  errorDisplayExamples: "/error-display-examples",
+  errorDisplayTestSuite: "/error-display-test-suite",
+  receptionDashboard: "/reception-dashboard",
 };

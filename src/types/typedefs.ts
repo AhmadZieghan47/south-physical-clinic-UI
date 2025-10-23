@@ -26,7 +26,7 @@ export type SessionTypeT =
   | "ELDER"
   | "HOSPITAL";
 export type LocationT = "CLINIC" | "HOME" | "HOSPITAL";
-export type ApptStatusT = "BOOKED" | "CHECKED_IN" | "COMPLETED" | "CANCELLED";
+export type ApptStatusT = "BOOKED" | "CHECKED_IN" | "COMPLETED" | "CANCELLED" | "RESCHEDULED";
 export type PriorityT = "HIGH" | "MEDIUM" | "LOW";
 export type DiscountScopeT = "APPOINTMENT" | "PLAN";
 export type DiscountTypeT = "PERCENT" | "FLAT";
@@ -42,6 +42,7 @@ export type PreferredNextT = "2D" | "3D" | "4D" | "5D" | "1W" | "2W";
 export type PriceBasisT = "PER_VISIT" | "PACKAGE_RATE";
 export type PaymentMethod = "CASH" | "CARD" | "INSURANCE";
 export type DiscountStatus = "PENDING" | "APPROVED" | "DENIED" | "REVOKED";
+export type ComplaintSeverityT = "MILD" | "MODERATE" | "SEVERE";
 
 /** Optional helper to narrow enumLabel.enumType */
 export type EnumTypeName =
@@ -168,11 +169,6 @@ export interface InsertSessionPrice {
 
 export type UpdateSessionPrice = Partial<Omit<SessionPrice, "id">>;
 
-export interface AddressJson {
-  city?: String;
-  street?: String;
-}
-
 /** ===================== Patients & Attachments ===================== */
 export interface Patient {
   id: BigIntStr;
@@ -184,11 +180,18 @@ export interface Patient {
   balance: Money; // Default 0
   extraCare: boolean;
   nationalId: string | null;
-  addressJson: AddressJson | null;
   notes: string | null;
+  isActive: boolean;
+  medicalHistory: string[];
+  orthopedicImplants: string[];
+  deletedAt: ISODateTime | null;
+  isDeleted: boolean;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
   plans?: TreatmentPlan[];
+  payments?: Payment[];
+  files?: FileBlob[];
+  insuranceProfiles?: InsuranceProfile[];
 }
 
 export interface InsertPatient {
@@ -201,8 +204,10 @@ export interface InsertPatient {
   balance?: Money;
   extraCare?: boolean;
   nationalId?: string | null;
-  addressJson?: Json | null;
   notes?: string | null;
+  isActive?: boolean;
+  medicalHistory?: string[];
+  orthopedicImplants?: string[];
   createdAt?: ISODateTime;
   updatedAt?: ISODateTime;
 }
@@ -259,6 +264,31 @@ export type UpdateInsuranceProfile = Partial<
   Omit<InsuranceProfile, "id" | "createdAt">
 >;
 
+/** ===================== Diagnosis & Complaints ===================== */
+export interface Diagnosis {
+  id: BigIntStr;
+  code: string;
+  nameEn: string;
+  nameAr: string;
+  category: string | null;
+  isActive: boolean;
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+}
+
+export interface InsertDiagnosis {
+  id?: BigIntStr;
+  code: string;
+  nameEn: string;
+  nameAr: string;
+  category?: string | null;
+  isActive?: boolean;
+  createdAt?: ISODateTime;
+  updatedAt?: ISODateTime;
+}
+
+export type UpdateDiagnosis = Partial<Omit<Diagnosis, "id" | "createdAt">>;
+
 /** ===================== Treatment Plans & Appointments ===================== */
 export interface TreatmentPlan {
   id: BigIntStr;
@@ -280,6 +310,9 @@ export interface TreatmentPlan {
   initialDxFileId: BigIntStr | null;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  appointments?: Appointment[];
+  diagnoses?: Array<Diagnosis & { isPrimary: boolean; notesEn?: string; notesAr?: string }>;
+  complaints?: string[] | null;
 }
 
 export interface InsertTreatmentPlan {

@@ -1,15 +1,34 @@
 import { Link } from "react-router";
 import { useState } from "react";
 
-import { all_routes } from "../../../../routes/all_routes";
-import Datatable from "../../../../../core/common/dataTable";
+import { all_routes } from "@/feature-module/routes/all_routes";
+import Datatable from "@/core/common/dataTable";
 import SearchFilters from "./filters";
-import { usePatientsTable } from "../../../../../hooks/usePatientsTable";
+import { usePatientsTable } from "@/hooks/useEnhancedPatientsTable";
+import { SmartError } from "@/components/ErrorDisplay";
 
 const Patients = () => {
   const [searchText, setSearchText] = useState<string>("");
 
-  const { columns, patients, totalCount } = usePatientsTable();
+  const {
+    columns,
+    patients,
+    totalCount,
+    currentPage,
+    currentPageSize,
+    handlePageChange,
+    deleteModal,
+    error,
+    handleRetry,
+    clearError,
+  } = usePatientsTable({
+    page: 1,
+    pageSize: 10,
+    search: searchText,
+    autoRetry: true,
+    maxRetries: 3,
+    showErrorToasts: true,
+  });
 
   return (
     <div className="page-wrapper">
@@ -46,15 +65,41 @@ const Patients = () => {
           searchText={searchText}
           setSearchText={setSearchText as any}
         />
+
+        {/* Error Display */}
+        {error && (
+          <div className="mb-3">
+            <SmartError
+              error={error}
+              onRetry={handleRetry}
+              onDismiss={clearError}
+              showSuggestions={true}
+              showRetryButton={true}
+            />
+          </div>
+        )}
+
         <div className="table-responsive">
           <Datatable
             columns={columns}
             dataSource={patients}
             Selection={false}
             searchText={searchText}
+            rowClassName={(record) => {
+              const hasPlans = record.plans && record.plans.length > 0;
+              return hasPlans ? "" : "table-warning";
+            }}
+            pagination={{
+              serverSide: true,
+              current: currentPage,
+              pageSize: currentPageSize,
+              total: totalCount,
+              onChange: handlePageChange,
+            }}
           />
         </div>
       </div>
+      {deleteModal}
     </div>
   );
 };

@@ -388,6 +388,25 @@
   z-index: 9999999 !important;
 }
 
+.file-table-d-contents {
+  display: contents;
+}
+
+.important-switch {
+  display: flex;
+  align-items: center;
+
+  input {
+    height: 20px!important;
+    width: 45px!important;
+    margin-right: 10px!important;
+  }
+
+  label {
+    font-weight: 600!important;
+  }
+}
+
 //Dark-mode
 [data-bs-theme="dark"] {
   .react-select__control {

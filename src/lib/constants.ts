@@ -1,0 +1,45 @@
+export const medicalHistoryOptions = [
+  "Diabetes",
+  "Hypertension",
+  "Heart Disease",
+  "Stroke",
+  "Cancer",
+  "Arthritis",
+  "Asthma",
+  "COPD",
+  "Kidney Disease",
+  "Liver Disease",
+  "Thyroid Disorders",
+  "Depression",
+  "Anxiety",
+  "Epilepsy",
+  "Migraine",
+  "Previous Surgery",
+  "Blood Clots",
+  "Autoimmune Disorders",
+  "Chronic Pain",
+  "Sleep Disorders",
+];
+
+export const implantedDevicesOptions = [
+  "Orthopedic metal fixation devices (screws, plates)",
+  "Cardiac pacemaker",
+  "Subcutaneous infusion pumps",
+  "Subcutaneous diabetes devices",
+  "Any other implanted devices",
+];
+
+export const insurerOptions = [
+  { label: "Blue Cross Blue Shield", value: "blue_cross_blue_shield" },
+  { label: "Aetna", value: "aetna" },
+  { label: "Cigna", value: "cigna" },
+  { label: "UnitedHealth Group", value: "unitedhealth" },
+  { label: "Humana", value: "humana" },
+  { label: "Kaiser Permanente", value: "kaiser_permanente" },
+  { label: "Anthem", value: "anthem" },
+  { label: "Medicare", value: "medicare" },
+  { label: "Medicaid", value: "medicaid" },
+  { label: "Tricare", value: "tricare" },
+  { label: "Workers' Compensation", value: "workers_comp" },
+  { label: "Other", value: "other" },
+];

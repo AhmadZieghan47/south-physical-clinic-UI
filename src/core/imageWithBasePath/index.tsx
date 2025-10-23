@@ -12,8 +12,15 @@ interface Image {
 }
 
 const ImageWithBasePath = (props: Image) => {
-  // Combine the base path and the provided src to create the full image source URL
-  const fullSrc = `${img_path}${props.src}`;
+  // Normalize provided src to be root-relative unless it's an absolute URL
+  const isAbsoluteUrl = /^https?:\/\//i.test(props.src);
+  const normalizedPath = isAbsoluteUrl
+    ? props.src
+    : `/${props.src.replace(/^\/+/, '')}`; // ensure leading '/'
+
+  // Join with optional base path, avoiding double slashes
+  const base = (img_path || '').replace(/\/$/, '');
+  const fullSrc = isAbsoluteUrl ? normalizedPath : `${base}${normalizedPath}`;
   return (
     <img
       className={props.className}
