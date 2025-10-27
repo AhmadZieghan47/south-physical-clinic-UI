@@ -41,6 +41,7 @@ export type CancelReasonT =
 export type PreferredNextT = "2D" | "3D" | "4D" | "5D" | "1W" | "2W";
 export type PriceBasisT = "PER_VISIT" | "PACKAGE_RATE";
 export type PaymentMethod = "CASH" | "CARD" | "INSURANCE";
+export type ExpenseMethod = "CASH" | "POS" | "CREDIT_CARD";
 export type DiscountStatus = "PENDING" | "APPROVED" | "DENIED" | "REVOKED";
 export type ComplaintSeverityT = "MILD" | "MODERATE" | "SEVERE";
 
@@ -63,6 +64,7 @@ export type EnumTypeName =
 /** ===================== Identity & Master ===================== */
 export interface AppUser {
   id: BigIntStr;
+  fullName: string;
   username: string;
   email: string;
   passwordHash: string;
@@ -76,6 +78,7 @@ export interface AppUser {
 
 export interface InsertAppUser {
   id?: BigIntStr;
+  fullName: string;
   username: string;
   email: string;
   passwordHash: string;
@@ -572,8 +575,59 @@ export interface Tables {
   appointmentProcedure: AppointmentProcedure;
   sessionNote: SessionNote;
   payment: Payment;
+  expense: Expense;
+  expenseCategory: ExpenseCategory;
   discount: Discount;
   overbookingQueue: OverbookingQueue;
   auditLog: AuditLog;
   enumLabel: EnumLabel;
 }
+
+/** ===================== Expenses ===================== */
+export interface ExpenseCategory {
+  id: BigIntStr;
+  nameEn: string;
+  nameAr: string;
+  isActive: boolean;
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+}
+
+export interface InsertExpenseCategory {
+  id?: BigIntStr;
+  nameEn: string;
+  nameAr: string;
+  isActive?: boolean;
+  createdAt?: ISODateTime;
+  updatedAt?: ISODateTime;
+}
+
+export type UpdateExpenseCategory = Partial<
+  Omit<ExpenseCategory, "id" | "createdAt">
+>;
+
+export interface Expense {
+  id: BigIntStr;
+  categoryId: BigIntStr;
+  amountJd: Money;
+  method: ExpenseMethod;
+  vendorName: string | null;
+  notes: string | null;
+  paidAt: ISODateTime;
+  recordedBy: BigIntStr;
+  createdAt: ISODateTime;
+}
+
+export interface InsertExpense {
+  id?: BigIntStr;
+  categoryId: BigIntStr;
+  amountJd: Money;
+  method: ExpenseMethod;
+  vendorName?: string | null;
+  notes?: string | null;
+  paidAt?: ISODateTime;
+  recordedBy: BigIntStr;
+  createdAt?: ISODateTime;
+}
+
+export type UpdateExpense = Partial<Omit<Expense, "id" | "createdAt">>;

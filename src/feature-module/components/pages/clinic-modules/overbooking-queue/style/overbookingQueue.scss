@@ -1,0 +1,355 @@
+// .page-wrapper {
+//     min-height: 100vh;
+//     display: flex;
+//     flex-direction: column;
+// }
+
+// .header-actions {
+//     display: flex;
+//     gap: 12px;
+//     align-items: center;
+// }
+
+// .stats-grid {
+//     display: grid;
+//     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+//     gap: 16px;
+//     margin-bottom: 24px;
+// }
+
+// .stat-card {
+//     .stat-card-header {
+//         display: flex;
+//         align-items: center;
+//         gap: 8px;
+//         margin-bottom: 8px;
+//     }
+
+//     .stat-icon {
+//         width: 20px;
+//         height: 20px;
+//         color: var(--primary);
+//     }
+
+//     .stat-title {
+//         font-size: 14px;
+//         font-weight: 500;
+//         color: var(--gray-600);
+//     }
+
+//     .stat-value {
+//         font-size: 28px;
+//         font-weight: 700;
+//         color: var(--gray-900);
+//     }
+// }
+
+// .queue-controls {
+//     margin-bottom: 24px;
+
+//     .controls-header {
+//         display: flex;
+//         align-items: center;
+//         justify-content: space-between;
+//         margin-bottom: 16px;
+//     }
+
+//     .controls-title {
+//         font-size: 18px;
+//         font-weight: 600;
+//         color: var(--gray-900);
+//     }
+
+//     .controls-actions {
+//         display: flex;
+//         gap: 12px;
+//     }
+// }
+
+// .search-filter {
+//     display: flex;
+//     gap: 16px;
+//     align-items: center;
+//     flex-wrap: wrap;
+
+//     .search-box {
+//         flex: 1;
+//         min-width: 200px;
+//     }
+
+//     .filter-select {
+//         min-width: 120px;
+//     }
+// }
+
+// .queue-list {
+//     overflow: hidden;
+
+//     .queue-header {
+//         background: var(--light);
+//         padding: 16px 20px;
+//         border-bottom: 1px solid var(--border-color);
+//         display: grid;
+//         grid-template-columns: 40px 1fr 120px 100px 120px 100px;
+//         gap: 16px;
+//         align-items: center;
+//         font-weight: 600;
+//         font-size: 14px;
+//         color: var(--gray-700);
+//     }
+
+//     .queue-item {
+//         padding: 16px 20px;
+//         border-bottom: 1px solid var(--border-color);
+//         display: grid;
+//         grid-template-columns: 40px 1fr 120px 100px 120px 100px;
+//         gap: 16px;
+//         align-items: center;
+//         transition: background-color 0.2s ease;
+
+//         &:hover {
+//             background: var(--light);
+//         }
+
+//         &:last-child {
+//             border-bottom: none;
+//         }
+
+//         .queue-number {
+//             font-weight: 600;
+//             color: var(--gray-600);
+//             text-align: center;
+//         }
+
+//         .patient-info {
+//             display: flex;
+//             flex-direction: column;
+//             gap: 2px;
+
+//             .patient-name {
+//                 font-weight: 600;
+//                 color: var(--gray-900);
+//                 font-size: 14px;
+//             }
+
+//             .patient-details {
+//                 font-size: 12px;
+//                 color: var(--gray-500);
+//             }
+//         }
+
+//         .priority-badge {
+//             padding: 4px 8px;
+//             border-radius: 4px;
+//             font-size: 12px;
+//             font-weight: 500;
+//             text-align: center;
+
+//             &.priority-high {
+//                 background: var(--danger-transparent);
+//                 color: var(--danger);
+//             }
+
+//             &.priority-medium {
+//                 background: var(--warning-transparent);
+//                 color: var(--warning);
+//             }
+
+//             &.priority-low {
+//                 background: var(--success-transparent);
+//                 color: var(--success);
+//             }
+//         }
+
+//         .added-time {
+//             font-size: 12px;
+//             color: var(--gray-500);
+//             text-align: center;
+//         }
+
+//         .queue-actions {
+//             display: flex;
+//             gap: 6px;
+//             justify-content: center;
+//         }
+//     }
+// }
+
+// .empty-state {
+//     text-align: center;
+//     padding: 60px 20px;
+//     color: var(--gray-500);
+
+//     .empty-icon {
+//         width: 64px;
+//         height: 64px;
+//         margin: 0 auto 16px;
+//         color: var(--gray-300);
+//     }
+
+//     .empty-title {
+//         font-size: 18px;
+//         font-weight: 600;
+//         margin-bottom: 8px;
+//         color: var(--gray-600);
+//     }
+
+//     .empty-description {
+//         font-size: 14px;
+//         margin-bottom: 20px;
+//     }
+// }
+
+// .loading-state {
+//     text-align: center;
+//     padding: 40px;
+//     font-size: 16px;
+//     color: var(--gray-600);
+// }
+
+// .modal-overlay {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   z-index: 1000;
+// }
+
+// .modal-dialog {
+//   background: var(--white);
+//   border-radius: 8px;
+//   box-shadow: var(--box-shadow);
+//   width: 90%;
+//   max-width: 500px;
+//   overflow: hidden;
+// }
+
+// .modal-content {
+//   display: flex;
+//   flex-direction: column;
+// }
+
+// .modal-header {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   padding: 16px 20px;
+//   border-bottom: 1px solid var(--border-color);
+
+//   .modal-title {
+//     font-size: 18px;
+//     font-weight: 600;
+//     color: var(--gray-900);
+//   }
+
+//   .btn-close {
+//     background: none;
+//     border: none;
+//     font-size: 24px;
+//     cursor: pointer;
+//     color: var(--gray-500);
+//     &:hover {
+//       color: var(--gray-700);
+//     }
+//   }
+// }
+
+// .modal-body {
+//   padding: 20px;
+// }
+
+// .modal-footer {
+//   display: flex;
+//   justify-content: flex-end;
+//   padding: 16px 20px;
+//   border-top: 1px solid var(--border-color);
+//   gap: 10px;
+// }
+
+// @media (max-width: 768px) {
+//     .queue-header,
+//     .queue-item {
+//         grid-template-columns: 1fr;
+//         gap: 8px;
+//     }
+
+//     .queue-header {
+//         display: none;
+//     }
+
+//     .queue-item {
+//         padding: 16px;
+//         border-radius: 8px;
+//         margin-bottom: 8px;
+//         border: 1px solid var(--border-color);
+//     }
+
+//     .search-filter {
+//         flex-direction: column;
+//         align-items: stretch;
+//     }
+// }
+
+// .add-patient-modal-content {
+//   .form-group {
+//     margin-bottom: 15px;
+//     label {
+//       display: block;
+//       margin-bottom: 5px;
+//       font-weight: 500;
+//       color: var(--gray-700);
+//     }
+//   }
+
+//   .search-results-list {
+//     list-style: none;
+//     padding: 0;
+//     margin-top: 5px;
+//     border: 1px solid var(--border-color);
+//     border-radius: 6px;
+//     max-height: 200px;
+//     overflow-y: auto;
+//     background-color: var(--white);
+//     box-shadow: var(--box-shadow-sm);
+
+//     li {
+//       padding: 10px 15px;
+//       cursor: pointer;
+//       &:hover {
+//         background-color: var(--light);
+//       }
+//       &:not(:last-child) {
+//         border-bottom: 1px solid var(--border-color);
+//       }
+//     }
+//   }
+
+//   .search-status {
+//     font-size: 13px;
+//     color: var(--gray-500);
+//     margin-top: 5px;
+//     padding-left: 5px;
+//   }
+
+//   .modal-actions {
+//     display: flex;
+//     justify-content: flex-end;
+//     gap: 10px;
+//     margin-top: 20px;
+//   }
+
+//   .alert-danger {
+//     background-color: var(--danger-transparent);
+//     color: var(--danger);
+//     border: 1px solid var(--danger);
+//     border-radius: 6px;
+//     padding: 10px 15px;
+//     margin-bottom: 15px;
+//     font-size: 14px;
+//   }
+// }

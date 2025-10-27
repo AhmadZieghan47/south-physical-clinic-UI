@@ -1,9 +1,66 @@
 
+import { useEffect } from "react";
 import { Link } from "react-router";
-import ImageWithBasePath from "../../../../../core/imageWithBasePath";
 import { DatePicker } from "antd";
+import ImageWithBasePath from "../../../../../core/imageWithBasePath";
+// import { createPayment, updatePayment } from "../../../../../api/payments";
 
 const PaymentsModal = () => {
+  // TODO: This modal is incomplete and needs to be fully implemented
+  // const [patientId, setPatientId] = useState("");
+  // const [_patientName, setPatientName] = useState("");
+  // const [amountJd, setAmountJd] = useState("");
+  // const [method, setMethod] = useState("CASH");
+  // const [paidAt, setPaidAt] = useState("");
+  // const [editingId, setEditingId] = useState<string | null>(null);
+  // const [_submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    (window as any).__openEditPayment = () => {
+      // const row = (window as any).__editPayment;
+      // if (!row) return;
+      // setEditingId(row.id);
+      // setPatientId(row.patientId || "");
+      // setPatientName("");
+      // setAmountJd(row.amountJd || "");
+      // setMethod(row.method || "CASH");
+      // setPaidAt(row.paidAt ? new Date(row.paidAt).toISOString().slice(0, 16) : "");
+    };
+  }, []);
+
+  // TODO: Wire up handleSave to save button when modal is complete
+  // const handleSave = async () => {
+  //   if (!patientId || !amountJd) return;
+  //   setSubmitting(true);
+  //   try {
+  //     const payload: any = {
+  //       patientId,
+  //       amountJd,
+  //       method: method as any,
+  //       ...(paidAt ? { paidAt: new Date(paidAt).toISOString() } : {}),
+  //     };
+  //     if (editingId) {
+  //       await updatePayment(editingId, payload);
+  //     } else {
+  //       await createPayment(payload);
+  //     }
+  //     if ((window as any).__refreshPayments) (window as any).__refreshPayments();
+  //     const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
+  //     closeButtons.forEach((b: any) => b.click());
+  //     setEditingId(null);
+  //     setPatientId("");
+  //     setPatientName("");
+  //     setAmountJd("");
+  //     setMethod("CASH");
+  //     setPaidAt("");
+  //     (window as any).__editPayment = null;
+  //   } catch (e) {
+  //     console.error(e);
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
+
   const getModalContainer = () => {
     const modalElement = document.getElementById("modal-datepicker");
     return modalElement ? modalElement : document.body; // Fallback to document.body if modalElement is null

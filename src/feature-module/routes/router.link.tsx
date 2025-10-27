@@ -51,14 +51,14 @@ import TodoList from "../components/pages/application-modules/application/todo/t
 import InvoiceDetails from "../components/pages/application-modules/invoice-details/invoiceDetails";
 import Activities from "../components/pages/clinic-modules/activities/activities";
 import AddDoctor from "../components/pages/clinic-modules/add-doctor/addDoctor";
-import AppointmentCalendar from "../components/pages/clinic-modules/appointment-calendar/appointmentCalendar";
 import AppointmentConsultations from "../components/pages/clinic-modules/appointment-consultations/appointmentConsultations";
 import Appointments from "../components/pages/clinic-modules/appointments/appointments";
-import OverbookingQueue from "../components/pages/clinic-modules/overbooking-queue/overbookingQueue";
 import Assets from "../components/pages/clinic-modules/assets/assets";
 import CreatePatient from "../components/pages/clinic-modules/create-patient/createPatient";
 import BeginTreatmentWizard from "../components/pages/clinic-modules/begin-treatment/BeginTreatmentWizard";
 import DiscountManagementDashboard from "../components/pages/clinic-modules/admin/DiscountManagementDashboard";
+import DiagnosesListPage from "../admin/diagnoses/DiagnosesListPage";
+import UsersListPage from "../admin/users/UsersListPage";
 import DoctorDetails from "../components/pages/clinic-modules/doctor-details/doctorDetails";
 import DoctorsList from "../components/pages/clinic-modules/doctors-list/doctorsList";
 import Doctors from "../components/pages/clinic-modules/doctors/doctors";
@@ -183,7 +183,7 @@ import UiAlerts from "../components/pages/ui-modules/ui-interface/base-ui/uiAler
 import UiAvatar from "../components/pages/ui-modules/ui-interface/base-ui/uiAvatar";
 import UiBadges from "../components/pages/ui-modules/ui-interface/base-ui/uiBadges";
 import UiBreadcrumb from "../components/pages/ui-modules/ui-interface/base-ui/uiBreadcrumb";
-import UiButtons from "../components/pages/ui-modules/ui-interface/base-ui/uiButtons";
+// import UiButtons from "../components/pages/ui-modules/ui-interface/base-ui/uiButtons";
 import UiButtonsGroup from "../components/pages/ui-modules/ui-interface/base-ui/uiButtonsGroup";
 import UiCards from "../components/pages/ui-modules/ui-interface/base-ui/uiCards";
 import UiCarousel from "../components/pages/ui-modules/ui-interface/base-ui/uiCarousel";
@@ -193,7 +193,7 @@ import UiGrid from "../components/pages/ui-modules/ui-interface/base-ui/uiGrid";
 import UiImages from "../components/pages/ui-modules/ui-interface/base-ui/uiImages";
 import UiLinks from "../components/pages/ui-modules/ui-interface/base-ui/uiLinks";
 import UiListGroup from "../components/pages/ui-modules/ui-interface/base-ui/uiListGroup";
-import UiModals from "../components/pages/ui-modules/ui-interface/base-ui/uiModals";
+// import UiModals from "../components/pages/ui-modules/ui-interface/base-ui/uiModals";
 import UiNavTabs from "../components/pages/ui-modules/ui-interface/base-ui/uiNavTabs";
 import UiOffcanvas from "../components/pages/ui-modules/ui-interface/base-ui/uiOffcanvas";
 import UiPagination from "../components/pages/ui-modules/ui-interface/base-ui/uiPagination";
@@ -246,8 +246,12 @@ import UiScrollbar from "../components/pages/ui-modules/ui-interface/ui-advance/
 import ErrorDisplayExamples from "../../examples/ErrorDisplayExamples";
 import ErrorDisplayTestSuite from "../../examples/ErrorDisplayTestSuite";
 import ReceptionDashboard from "../../examples/ReceptionDashboard";
+import { OverbookingQueuePage } from "../components/pages/clinic-modules/overbooking-queue/OverbookingQueuePage";
+import SchedulerPage from "../components/pages/clinic-modules/scheduler/SchedulerPage";
 import { all_routes } from "./all_routes";
 import { Navigate, Route } from "react-router";
+import ButtonExamples from "@/core/common/button/Button.example";
+import ModalExamples from "../components/pages/ui-modules/ui-interface/base-ui/modalExamples";
 
 const routes = all_routes;
 
@@ -569,6 +573,16 @@ export const publicRoutes = [
     route: Route,
   },
   {
+    path: routes.diagnoses,
+    element: <DiagnosesListPage />,
+    route: Route,
+  },
+  {
+    path: routes.adminUsers,
+    element: <UsersListPage />,
+    route: Route,
+  },
+  {
     path: routes.editPatient,
     element: <EditPatient />,
     route: Route,
@@ -605,7 +619,8 @@ export const publicRoutes = [
   },
   {
     path: routes.uiButtons,
-    element: <UiButtons />,
+    // element: <UiButtons />,
+    element: <ButtonExamples />,
     route: Route,
   },
   {
@@ -660,7 +675,8 @@ export const publicRoutes = [
   },
   {
     path: routes.uiModals,
-    element: <UiModals />,
+    // element: <UiModals />,
+    element: <ModalExamples />,
     route: Route,
   },
   {
@@ -1355,12 +1371,17 @@ export const publicRoutes = [
   },
   {
     path: routes.appointmentCalendar,
-    element: <AppointmentCalendar />,
+    element: <SchedulerPage />,
     route: Route,
   },
   {
     path: routes.overbookingQueue,
-    element: <OverbookingQueue />,
+    element: <OverbookingQueuePage />,
+    route: Route,
+  },
+  {
+    path: routes.scheduler,
+    element: <SchedulerPage />,
     route: Route,
   },
   {

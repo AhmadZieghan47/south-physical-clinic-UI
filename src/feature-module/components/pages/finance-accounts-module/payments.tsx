@@ -1,30 +1,35 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import FilterIndex from "../../../../core/common/filter/filterIndex";
 import SearchInput from "../../../../core/common/dataTable/dataTableSearch";
-import { PaymentsListData } from "../../../../core/json/paymetsListData";
-import { all_routes } from "../../../routes/all_routes";
+// import { PaymentsListData } from "../../../../core/json/paymetsListData";
 import Datatable from "../../../../core/common/dataTable";
 import PaymentsModal from "./modal/paymentsModal";
 import ImageWithBasePath from "../../../../core/imageWithBasePath";
+import { listPayments, deletePayment } from "../../../../api/payments";
+import type { Payment, PaymentMethod } from "../../../../types/typedefs";
 
 const PaymentsList = () => {
-  const data = PaymentsListData;
+  const [rows, setRows] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [methodFilter, setMethodFilter] = useState<PaymentMethod | "">("");
+  const [fromPaidAt, setFromPaidAt] = useState<string | "">("");
+  const [toPaidAt, setToPaidAt] = useState<string | "">("");
   const columns = [
     {
-      title: "Invoice ID",
-      dataIndex: "InvoiceID",
+      title: "Payment ID",
+      dataIndex: "id",
       render: (text: any) => <Link to="#">{text}</Link>,
-      sorter: (a: any, b: any) => a.InvoiceID.length - b.InvoiceID.length,
+      sorter: (a: any, b: any) => Number(a.id) - Number(b.id),
     },
     {
       title: "Patient",
-      dataIndex: "Patient",
-      render: (text: any, record: any) => (
+      dataIndex: "patientId",
+      render: (text: any, _record: any) => (
         <div className="d-flex align-items-center">
           <Link to="#" className="avatar avatar-md me-2">
             <ImageWithBasePath
-              src={`assets/img/users/${record.Image}`}
+              src={`assets/img/users/user-01.jpg`}
               alt="product"
               className="rounded-circle"
             />
@@ -34,54 +39,31 @@ const PaymentsList = () => {
           </Link>
         </div>
       ),
-      sorter: (a: any, b: any) => a.Patient.length - b.Patient.length,
+      sorter: (a: any, b: any) => Number(a.patientId) - Number(b.patientId),
     },
     {
-      title: "Doctor",
-      dataIndex: "Doctor",
-      render: (text: any, record: any) => (
-        <div className="d-flex align-items-center">
-          <Link to={all_routes.doctordetails} className="avatar me-2">
-            <ImageWithBasePath
-              src={`assets/img/doctors/${record.DoctorImage}`}
-              alt="Doctor"
-              className="rounded-circle"
-            />
-          </Link>
-          <div>
-            <h6 className="mb-1 fs-14 fw-semibold">
-              <Link to={all_routes.doctordetails}>{text}</Link>
-            </h6>
-            <span className="fs-13 d-block">{record.Position}</span>
-          </div>
-        </div>
-      ),
-      sorter: (a: any, b: any) => a.Doctor.length - b.Doctor.length,
-    },
-    {
-      title: "PaidDate",
-      dataIndex: "PaidDate",
-      render: (text: any) => <div className="text-dark"> {text} </div>,
-      sorter: (a: any, b: any) => a.PaidDate.length - b.PaidDate.length,
+      title: "Paid At",
+      dataIndex: "paidAt",
+      render: (text: any) => <div className="text-dark"> {new Date(text).toLocaleString()} </div>,
+      sorter: (a: any, b: any) => new Date(a.paidAt).getTime() - new Date(b.paidAt).getTime(),
     },
     {
       title: "Amount",
-      dataIndex: "Amount",
+      dataIndex: "amountJd",
       render: (text: any) => (
         <div className="fw-semibold text-dark">{text}</div>
       ),
-      sorter: (a: any, b: any) => a.Amount.length - b.Amount.length,
+      sorter: (a: any, b: any) => Number(a.amountJd) - Number(b.amountJd),
     },
     {
       title: "Payment Method",
-      dataIndex: "PaymentMethod",
+      dataIndex: "method",
       render: (text: any) => <div className="text-dark"> {text} </div>,
-      sorter: (a: any, b: any) =>
-        a.PaymentMethod.length - b.PaymentMethod.length,
+      sorter: (a: any, b: any) => a.method.localeCompare(b.method),
     },
     {
       title: "Status",
-      dataIndex: "Status",
+      dataIndex: "status",
       render: (text: any) => (
         <span
           className={`badge border ${
@@ -95,11 +77,11 @@ const PaymentsList = () => {
           {text}
         </span>
       ),
-      sorter: (a: any, b: any) => a.Status.length - b.Status.length,
+      sorter: (a: any, b: any) => (a.status || "").localeCompare(b.status || ""),
     },
     {
       title: "",
-      render: () => (
+      render: (_: any, record: Payment) => (
         <div className="action-item p-2">
           <Link to="#" data-bs-toggle="dropdown">
             <i className="ti ti-dots-vertical" />
@@ -111,6 +93,7 @@ const PaymentsList = () => {
                 className="dropdown-item d-flex align-items-center"
                 data-bs-toggle="modal"
                 data-bs-target="#edit_new_payment"
+                onClick={() => { (window as any).__editPayment = record; (window as any).__openEditPayment && (window as any).__openEditPayment(); }}
               >
                 Edit
               </Link>
@@ -119,8 +102,7 @@ const PaymentsList = () => {
               <Link
                 to="#"
                 className="dropdown-item d-flex align-items-center"
-                data-bs-toggle="modal"
-                data-bs-target="#delete_modal"
+                onClick={async () => { try { await deletePayment(record.id); await fetchRows(); } catch (e) { console.error(e); } }}
               >
                 Delete
               </Link>
@@ -136,6 +118,31 @@ const PaymentsList = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
+
+  const fetchRows = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await listPayments({
+        ...(methodFilter ? { method: methodFilter } : {}),
+        ...(fromPaidAt ? { fromPaidAt } : {}),
+        ...(toPaidAt ? { toPaidAt } : {}),
+      });
+      setRows(data);
+    } catch (e: any) {
+      setError(e?.error?.message || "Failed to load payments");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    (window as any).__refreshPayments = fetchRows;
+    fetchRows();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const data = useMemo(() => rows, [rows]);
   return (
     <>
       {/* ========================
@@ -225,12 +232,32 @@ const PaymentsList = () => {
                       <Link
                         to="#"
                         className="link-danger text-decoration-underline"
+                        onClick={() => { setMethodFilter(""); setFromPaidAt(""); setToPaidAt(""); fetchRows(); }}
                       >
                         Clear All
                       </Link>
                     </div>
                   </div>
-                  <FilterIndex />
+                  <div className="p-3">
+                    <div className="mb-2">
+                      <label className="form-label">Method</label>
+                      <select className="form-select" value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as any)}>
+                        <option value="">All</option>
+                        <option value="CASH">CASH</option>
+                        <option value="CARD">CARD</option>
+                        <option value="INSURANCE">INSURANCE</option>
+                      </select>
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label">From</label>
+                      <input type="datetime-local" className="form-control" value={fromPaidAt} onChange={(e) => setFromPaidAt(e.target.value)} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label">To</label>
+                      <input type="datetime-local" className="form-control" value={toPaidAt} onChange={(e) => setToPaidAt(e.target.value)} />
+                    </div>
+                    <button className="btn btn-primary" onClick={fetchRows}>Apply</button>
+                  </div>
                 </div>
               </div>
               <div className="dropdown">
@@ -265,6 +292,8 @@ const PaymentsList = () => {
               Selection={false}
               searchText={searchText}
             />
+            {loading && <div className="p-2">Loading...</div>}
+            {error && <div className="p-2 text-danger">{error}</div>}
           </div>
           {/*  End Table */}
         </div>
