@@ -22,7 +22,11 @@ interface Therapist {
   email: string;
 }
 
-export default function StepDetails() {
+interface StepDetailsProps {
+  isSchedulerPreFilled?: boolean;
+}
+
+export default function StepDetails({ isSchedulerPreFilled = false }: StepDetailsProps) {
   const {
     register,
     watch,
@@ -230,9 +234,10 @@ export default function StepDetails() {
                 {...register("therapistId")}
                 className={`form-select ${
                   errors.therapistId ? "is-invalid" : ""
-                }`}
+                } ${isSchedulerPreFilled ? "bg-light" : ""}`}
                 onChange={(e) => handleTherapistChange(e.target.value)}
                 value={selectedTherapistId || ""}
+                disabled={isSchedulerPreFilled}
               >
                 <option value="">Select a therapist</option>
                 {therapists.map((therapist) => (
@@ -245,6 +250,12 @@ export default function StepDetails() {
             {errors.therapistId && (
               <div className="invalid-feedback">
                 {errors.therapistId.message}
+              </div>
+            )}
+            {isSchedulerPreFilled && (
+              <div className="form-text text-info">
+                <i className="ti ti-lock me-1" />
+                Pre-selected from scheduler slot
               </div>
             )}
           </div>
@@ -261,7 +272,7 @@ export default function StepDetails() {
             <DatePicker
               className={`form-control ${
                 errors.appointmentDate ? "is-invalid" : ""
-              }`}
+              } ${isSchedulerPreFilled ? "bg-light" : ""}`}
               placeholder="Select date"
               format="DD-MM-YYYY"
               onChange={handleDateChange}
@@ -269,10 +280,17 @@ export default function StepDetails() {
               disabledDate={(current) =>
                 current && current < dayjs().startOf("day")
               }
+              disabled={isSchedulerPreFilled}
             />
             {errors.appointmentDate && (
               <div className="invalid-feedback">
                 {errors.appointmentDate.message}
+              </div>
+            )}
+            {isSchedulerPreFilled && (
+              <div className="form-text text-info">
+                <i className="ti ti-lock me-1" />
+                Pre-selected from scheduler slot
               </div>
             )}
           </div>
@@ -285,21 +303,31 @@ export default function StepDetails() {
               Start Time <span className="text-danger">*</span>
             </label>
             <TimePicker
-              className={`form-control ${errors.startTime ? "is-invalid" : ""}`}
+              className={`form-control ${errors.startTime ? "is-invalid" : ""} ${
+                isSchedulerPreFilled ? "bg-light" : ""
+              }`}
               placeholder="Select start time"
               format="HH:mm"
               onChange={handleTimeChange}
               value={
                 watch("startTime") ? dayjs(watch("startTime"), "HH:mm") : null
               }
+              disabled={isSchedulerPreFilled}
             />
             {errors.startTime && (
               <div className="invalid-feedback">{errors.startTime.message}</div>
             )}
-            <div className="form-text text-info">
-              <i className="ti ti-info-circle me-1" />
-              Session duration will be automatically set to 1 hour
-            </div>
+            {isSchedulerPreFilled ? (
+              <div className="form-text text-info">
+                <i className="ti ti-lock me-1" />
+                Time pre-selected from scheduler slot
+              </div>
+            ) : (
+              <div className="form-text text-info">
+                <i className="ti ti-info-circle me-1" />
+                Session duration will be automatically set to 1 hour
+              </div>
+            )}
           </div>
         </div>
 

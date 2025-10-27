@@ -117,6 +117,7 @@ export const all_routes = {
   appointments: "/appointments",
   newAppointment: "/new-appointment",
   appointmentCalendar: "/appointment-calendar",
+  scheduler: "/appointments/scheduler",
   overbookingQueue: "/overbooking-queue",
   locations: "/locations",
   services: "/services",
@@ -158,6 +159,8 @@ export const all_routes = {
   appointmentReport: "/appointment-report",
   patientReport: "/patient-report",
   auditLogs: "/audit-logs",
+  diagnoses: "/admin/diagnoses",
+  adminUsers: "/admin/users",
 
   //Content Page routes
   pages: "/pages",

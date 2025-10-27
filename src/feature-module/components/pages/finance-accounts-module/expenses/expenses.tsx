@@ -1,49 +1,60 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import ImageWithBasePath from "../../../../../core/imageWithBasePath";
-import FilterIndex from "../../../../../core/common/filter/filterIndex";
 import SearchInput from "../../../../../core/common/dataTable/dataTableSearch";
-import { ExpensesListData } from "../../../../../core/json/expensesListData";
 import Datatable from "../../../../../core/common/dataTable";
 import ExpensesModal from "../modal/expensesModal";
+import type { Expense, ExpenseMethod } from "../../../../../types/typedefs";
+import { listExpenses, deleteExpense } from "../../../../../api/expenses";
+import { listExpenseCategories } from "../../../../../api/expenseCategories";
 
 const ExpensesList = () => {
-  const data = ExpensesListData;
+  const [rows, setRows] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState<string>("");
+  const [methodFilter, setMethodFilter] = useState<ExpenseMethod | "">("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [vendorFilter, setVendorFilter] = useState<string>("");
+  const [fromPaidAt, setFromPaidAt] = useState<string | "">("");
+  const [toPaidAt, setToPaidAt] = useState<string | "">("");
+  const [categories, setCategories] = useState<Array<{ id: string; nameEn: string }>>([]);
+
   const columns = [
     {
-      title: "Expense",
-      dataIndex: "Expense",
+      title: "Expense ID",
+      dataIndex: "id",
       render: (text: any) => <Link to="">{text}</Link>,
-      sorter: (a: any, b: any) => a.Expense.length - b.Expense.length,
+      sorter: (a: any, b: any) => Number(a.id) - Number(b.id),
     },
     {
       title: "Category",
-      dataIndex: "Category",
-      render: (text: any) => <div className="text-dark"> {text} </div>,
-      sorter: (a: any, b: any) => a.Category.length - b.Category.length,
+      dataIndex: "categoryId",
+      render: (text: any) => <div className="text-dark"> {categories.find(c => c.id === text)?.nameEn || text} </div>,
+      sorter: (a: any, b: any) => Number(a.categoryId) - Number(b.categoryId),
     },
     {
       title: "Amount",
-      dataIndex: "Amount",
+      dataIndex: "amountJd",
       render: (text: any) => (
         <div className="fw-semibold text-dark"> {text} </div>
       ),
-      sorter: (a: any, b: any) => a.Amount.length - b.Amount.length,
+      sorter: (a: any, b: any) => Number(a.amountJd) - Number(b.amountJd),
     },
     {
       title: "Date",
-      dataIndex: "Date",
-      render: (text: any) => <div className="text-dark"> {text} </div>,
-      sorter: (a: any, b: any) => a.Date.length - b.Date.length,
+      dataIndex: "paidAt",
+      render: (text: any) => <div className="text-dark"> {new Date(text).toLocaleString()} </div>,
+      sorter: (a: any, b: any) => new Date(a.paidAt).getTime() - new Date(b.paidAt).getTime(),
     },
     {
       title: "Purchased By",
-      dataIndex: "PurchasedBy",
-      render: (text: any, record: any) => (
+      dataIndex: "recordedBy",
+      render: (text: any) => (
         <div className="d-flex align-items-center">
           <Link to="#" className="avatar avatar-md me-2">
             <ImageWithBasePath
-              src={`assets/img/users/${record.Image}`}
+              src={`assets/img/users/user-01.jpg`}
               alt="product"
               className="rounded-circle"
             />
@@ -53,18 +64,17 @@ const ExpensesList = () => {
           </Link>
         </div>
       ),
-      sorter: (a: any, b: any) => a.PurchasedBy.length - b.PurchasedBy.length,
+      sorter: (a: any, b: any) => Number(a.recordedBy) - Number(b.recordedBy),
     },
     {
       title: "Payment Method",
-      dataIndex: "PaymentMethod",
+      dataIndex: "method",
       render: (text: any) => <div className="text-dark">{text}</div>,
-      sorter: (a: any, b: any) =>
-        a.PaymentMethod.length - b.PaymentMethod.length,
+      sorter: (a: any, b: any) => a.method.localeCompare(b.method),
     },
     {
       title: "Status",
-      dataIndex: "Status",
+      dataIndex: "status",
       render: (text: any) => (
         <span
           className={`badge border ${
@@ -80,11 +90,11 @@ const ExpensesList = () => {
           {text}
         </span>
       ),
-      sorter: (a: any, b: any) => a.Status.length - b.Status.length,
+      sorter: (a: any, b: any) => (a.status || "").localeCompare(b.status || ""),
     },
     {
       title: "",
-      render: () => (
+      render: (_: any, record: Expense) => (
         <div className="action-item p-2">
           <Link to="#" data-bs-toggle="dropdown">
             <i className="ti ti-dots-vertical" />
@@ -96,6 +106,7 @@ const ExpensesList = () => {
                 className="dropdown-item d-flex align-items-center"
                 data-bs-toggle="modal"
                 data-bs-target="#edit_new_expense"
+                onClick={() => { (window as any).__editExpense = record; (window as any).__openEditExpense && (window as any).__openEditExpense(); }}
               >
                 Edit
               </Link>
@@ -104,8 +115,7 @@ const ExpensesList = () => {
               <Link
                 to="#"
                 className="dropdown-item d-flex align-items-center"
-                data-bs-toggle="modal"
-                data-bs-target="#delete_modal"
+                onClick={async () => { try { await deleteExpense(record.id); await fetchRows(); } catch (e) { console.error(e); } }}
               >
                 Delete
               </Link>
@@ -116,11 +126,45 @@ const ExpensesList = () => {
     },
   ];
 
-  const [searchText, setSearchText] = useState<string>("");
-
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
+  const data = useMemo(() => rows, [rows]);
+
+  const fetchRows = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await listExpenses({
+        ...(categoryFilter ? { categoryId: categoryFilter } : {}),
+        ...(methodFilter ? { method: methodFilter } : {}),
+        ...(vendorFilter ? { vendorName: vendorFilter } : {}),
+        ...(fromPaidAt ? { fromPaidAt } : {}),
+        ...(toPaidAt ? { toPaidAt } : {}),
+      });
+      setRows(data);
+    } catch (e: any) {
+      setError(e?.error?.message || "Failed to load expenses");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const cats = await listExpenseCategories(true);
+      setCategories(cats.map((c) => ({ id: c.id, nameEn: c.nameEn })));
+    } catch (e) {
+      // ignore for now
+    }
+  };
+
+  useEffect(() => {
+    (window as any).__refreshExpenses = fetchRows;
+    fetchCategories();
+    fetchRows();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       {/* ========================
@@ -214,7 +258,42 @@ const ExpensesList = () => {
                       </Link>
                     </div>
                   </div>
-                  <FilterIndex />
+                  <div className="p-3">
+                    <div className="mb-2">
+                      <label className="form-label">Category</label>
+                      <select className="form-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+                        <option value="">All</option>
+                        {categories.map((c) => (
+                          <option key={c.id} value={c.id}>{c.nameEn}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label">Method</label>
+                      <select className="form-select" value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as any)}>
+                        <option value="">All</option>
+                        <option value="CASH">CASH</option>
+                        <option value="POS">POS</option>
+                        <option value="CREDIT_CARD">CREDIT_CARD</option>
+                      </select>
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label">Vendor</label>
+                      <input className="form-control" value={vendorFilter} onChange={(e) => setVendorFilter(e.target.value)} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label">From</label>
+                      <input type="datetime-local" className="form-control" value={fromPaidAt} onChange={(e) => setFromPaidAt(e.target.value)} />
+                    </div>
+                    <div className="mb-2">
+                      <label className="form-label">To</label>
+                      <input type="datetime-local" className="form-control" value={toPaidAt} onChange={(e) => setToPaidAt(e.target.value)} />
+                    </div>
+                    <div className="d-flex gap-2">
+                      <button className="btn btn-primary" onClick={fetchRows}>Apply</button>
+                      <button className="btn btn-light" onClick={() => { setCategoryFilter(""); setMethodFilter(""); setVendorFilter(""); setFromPaidAt(""); setToPaidAt(""); fetchRows(); }}>Clear</button>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="dropdown">
@@ -243,12 +322,9 @@ const ExpensesList = () => {
           {/*  End Filter */}
           {/*  Start Table */}
           <div className="table-responsive">
-            <Datatable
-              columns={columns}
-              dataSource={data}
-              Selection={false}
-              searchText={searchText}
-            />
+            <Datatable columns={columns} dataSource={data} Selection={false} searchText={searchText} />
+            {loading && <div className="p-2">Loading...</div>}
+            {error && <div className="p-2 text-danger">{error}</div>}
           </div>
           {/*  End Table */}
         </div>

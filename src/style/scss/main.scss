@@ -54,6 +54,7 @@ Author URL: https://themeforest.net/user/dreamstechnologies
 @forward "pages/notification";
 @forward "pages/ui-pages";
 @forward "pages/widgets";
+@forward "pages/overbooking-queue";
 
 // Plugins
 @forward "plugins/dragula";
@@ -75,3 +76,14 @@ Author URL: https://themeforest.net/user/dreamstechnologies
 @forward "plugins/daterange";
 @forward "plugins/calendar";
 @forward "plugins/rangepicker-plugin";
+
+// Custom.scss
+// Option B: Include parts of Bootstrap
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "../node_modules/bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "../node_modules/bootstrap/scss/mixins";

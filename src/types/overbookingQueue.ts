@@ -2,6 +2,7 @@
 // Matching backend typedefs and API contract
 
 import type { BigIntStr, ISODateTime, PriorityT } from "./typedefs";
+import type { Patient, AppUser } from "./typedefs";
 
 // Core overbooking queue interfaces matching backend
 export interface OverbookingQueue {
@@ -32,16 +33,8 @@ export interface UpdateOverbookingQueue {
 
 // Extended interfaces for UI display
 export interface QueueItemWithPatient extends OverbookingQueue {
-  patient: {
-    id: BigIntStr;
-    fullName: string;
-    phone: string;
-    dob: string;
-  };
-  addedByUser: {
-    id: BigIntStr;
-    username: string;
-  };
+  patient: Pick<Patient, "id" | "fullName" | "phone"> & { extraCare: boolean };
+  addedByUser: Pick<AppUser, "id" | "username">;
 }
 
 // API response types
@@ -53,29 +46,24 @@ export interface GetQueueResponse {
 }
 
 export interface CreateQueueItemRequest {
-  patientId: string;
+  patientId: BigIntStr;
   priority: PriorityT;
-  isActive?: boolean;
-  addedBy: string;
-  addedAt?: string;
+  addedBy: BigIntStr;
 }
 
-export interface UpdateQueueItemRequest {
-  priority?: PriorityT;
-  isActive?: boolean;
-}
+export type UpdateQueueItemRequest = Partial<Omit<OverbookingQueue, "id" | "patientId" | "addedAt" | "addedBy">>;
 
 // Filter and search parameters
 export interface QueueFilters {
-  page?: number;
-  pageSize?: number;
-  search?: string; // patient name search
+  patientId?: BigIntStr;
   priority?: PriorityT;
   isActive?: boolean;
-  patientId?: string; // filter by specific patient
-  addedBy?: string;
-  fromAddedAt?: string;
-  toAddedAt?: string;
+  addedBy?: BigIntStr;
+  fromAddedAt?: ISODateTime;
+  toAddedAt?: ISODateTime;
+  page?: number;
+  pageSize?: number;
+  search?: string; // For patient name/ID search
 }
 
 // Component prop types

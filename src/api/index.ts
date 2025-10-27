@@ -17,6 +17,9 @@ import { createModuleApi, enhancedApi } from "../lib/enhancedApi";
 export * from "./enhancedPatients";
 export * from "./enhancedAppointments";
 export * from "./payments";
+export * from "./expenses";
+export * from "./expenseCategories";
+export * from "./overbookingQueue";
 
 // Re-export original APIs for backward compatibility
 export { api } from "../lib/api";

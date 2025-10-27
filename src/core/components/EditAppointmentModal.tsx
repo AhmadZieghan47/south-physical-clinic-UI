@@ -90,6 +90,9 @@ export default function EditAppointmentModal({
       const startsAt = new Date(`${date}T${startTime}:00`).toISOString();
       const endsAt = new Date(`${date}T${endTime}:00`).toISOString();
 
+      console.log("startsAt", startsAt);
+      console.log("endsAt", endsAt);
+
       await executeWithErrorHandling(async () => {
         await updateAppointment({
           id: appointment.id,

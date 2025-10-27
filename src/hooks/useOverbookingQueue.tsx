@@ -30,8 +30,16 @@ interface UseOverbookingQueueOptions extends QueueFilters {
   onError?: (error: any) => void;
 }
 
+interface QueueStats {
+  totalInQueue: number;
+  highPriority: number;
+  averageWait: string;
+  todaysAdditions: number;
+}
+
 interface UseOverbookingQueueReturn {
   queueItems: QueueItemWithPatient[];
+  stats: QueueStats;
   totalCount: number;
   currentPage: number;
   currentPageSize: number;
@@ -55,6 +63,7 @@ interface UseOverbookingQueueReturn {
   tableColumns: any[];
   formatPriority: (priority: PriorityT) => { label: string; className: string; icon: string };
   formatDateTime: (dateTime: string) => string;
+  onQueueItemSelect?: (item: QueueItemWithPatient) => void; // Made optional to match options
 }
 
 // ============================================================================
@@ -90,6 +99,13 @@ export function useOverbookingQueue(
     total: 0,
     page: 1,
     pageSize: 20,
+  });
+
+  const [stats, setStats] = useState<QueueStats>({
+    totalInQueue: 0,
+    highPriority: 0,
+    averageWait: "N/A",
+    todaysAdditions: 0,
   });
 
   const [filters, setFilters] = useState<QueueFilters>({
@@ -183,6 +199,14 @@ export function useOverbookingQueue(
     const result = await executeWithErrorHandling(async () => {
       const response = await getQueueItems(filters);
       setQueueData(response);
+      // MOCK STATS DATA
+      setStats({
+        totalInQueue: response.total,
+        highPriority: response.data.filter((i) => i.priority === "HIGH")
+          .length,
+        averageWait: "2.5h",
+        todaysAdditions: 5,
+      });
       return response;
     });
 
@@ -300,14 +324,25 @@ export function useOverbookingQueue(
       title: "Patient",
       dataIndex: "patientId",
       key: "patientId",
-      render: (patientId: string, record: any) => (
-        <div>
-          <div className="fw-medium">Patient ID: {patientId}</div>
-          <small className="text-muted">
-            {record.patient?.fullName || "Patient data loading..."}
-          </small>
-        </div>
-      ),
+      render: (patientId: string, record: QueueItemWithPatient) => {
+        if (!record.patient) {
+          return (
+            <div>
+              <div
+                className="skeleton-loader"
+                style={{ width: "120px", height: "1.2em" }}
+              />
+              <small className="text-muted">Loading...</small>
+            </div>
+          );
+        }
+        return (
+          <div>
+            <div className="fw-medium">{record.patient.fullName}</div>
+            <small className="text-muted">ID: {patientId}</small>
+          </div>
+        );
+      },
     },
     {
       title: "Added",
@@ -423,6 +458,7 @@ export function useOverbookingQueue(
   return {
     queueItems: queueData?.data || [],
     totalCount: queueData?.total || 0,
+    stats,
     currentPage: queueData?.page || 1,
     currentPageSize: queueData?.pageSize || 20,
     isLoading,
@@ -445,5 +481,6 @@ export function useOverbookingQueue(
     tableColumns,
     formatPriority,
     formatDateTime,
+    onQueueItemSelect,
   };
 }

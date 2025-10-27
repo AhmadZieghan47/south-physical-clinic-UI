@@ -1,6 +1,3 @@
-// Enhanced Overbooking Queue API with Integrated Error Handling
-// This file provides enhanced API functions for overbooking queue operations with proper error handling
-
 import { createModuleApi } from "../lib/enhancedApi";
 import type {
   QueueItemWithPatient,
@@ -27,20 +24,20 @@ const queueApi = createModuleApi("OverbookingQueueModule", {
 export async function getQueueItems(
   params: QueueFilters = {}
 ): Promise<GetQueueResponse> {
-  const { 
-    page, 
-    pageSize, 
-    search, 
-    priority, 
+  const {
+    page,
+    pageSize,
+    search,
+    priority,
     isActive,
     patientId,
-    addedBy, 
-    fromAddedAt, 
-    toAddedAt 
+    addedBy,
+    fromAddedAt,
+    toAddedAt
   } = params;
 
   const query: Record<string, any> = {};
-  
+
   if (page !== undefined) query.page = page;
   if (pageSize !== undefined) query.pageSize = pageSize;
   if (search && search.trim().length > 0) query.search = search.trim();
@@ -58,7 +55,7 @@ export async function getQueueItems(
 
   // Handle case where backend returns array directly instead of paginated response
   const data = Array.isArray(response.data) ? response.data : (response.data as any)?.data || [];
-  
+
   return {
     data: data,
     total: data.length, // Since backend doesn't provide pagination yet
@@ -90,9 +87,9 @@ export async function addToQueue(
     "/overbooking-queue",
     data,
     {
-      context: { 
-        action: "add_to_queue", 
-        additionalData: { patientId: data.patientId, priority: data.priority } 
+      context: {
+        action: "add_to_queue",
+        additionalData: { patientId: data.patientId, priority: data.priority }
       },
     }
   );
@@ -110,9 +107,9 @@ export async function updateQueueItem(
     `/overbooking-queue/${id}`,
     data,
     {
-      context: { 
-        action: "update_queue_item", 
-        additionalData: { id, updates: data } 
+      context: {
+        action: "update_queue_item",
+        additionalData: { id, updates: data }
       },
     }
   );
@@ -147,13 +144,14 @@ export async function getQueueStats(): Promise<{
   mediumPriority: number;
   lowPriority: number;
   addedToday: number;
+  averageWait: string;
 }> {
   const [activeQueue, todayQueue] = await Promise.all([
     getQueueItems({ isActive: true, pageSize: 1000 }),
-    getQueueItems({ 
-      isActive: true, 
+    getQueueItems({
+      isActive: true,
       fromAddedAt: new Date().toISOString().split('T')[0],
-      pageSize: 1000 
+      pageSize: 1000
     })
   ]);
 
@@ -162,17 +160,27 @@ export async function getQueueStats(): Promise<{
     return acc;
   }, {} as Record<string, number>);
 
+  const totalWaitTime = activeQueue.data.reduce((sum, item) => {
+    const addedAt = new Date(item.addedAt).getTime();
+    const now = new Date().getTime();
+    return sum + (now - addedAt);
+  }, 0);
+
+  const averageWaitMillis = activeQueue.data.length > 0 ? totalWaitTime / activeQueue.data.length : 0;
+  const averageWaitHours = (averageWaitMillis / (1000 * 60 * 60)).toFixed(1);
+
   return {
     totalActive: activeQueue.total,
     highPriority: priorities.HIGH || 0,
     mediumPriority: priorities.MEDIUM || 0,
     lowPriority: priorities.LOW || 0,
     addedToday: todayQueue.total,
+    averageWait: `${averageWaitHours}h`,
   };
 }
 
 // ============================================================================
-// UTILITY FUNCTIONS  
+// UTILITY FUNCTIONS
 // ============================================================================
 
 /**
@@ -198,10 +206,10 @@ export async function searchPatientsForQueue(
  */
 export async function isPatientInQueue(patientId: string): Promise<boolean> {
   try {
-    const response = await getQueueItems({ 
-      patientId, 
-      isActive: true, 
-      pageSize: 1 
+    const response = await getQueueItems({
+      patientId,
+      isActive: true,
+      pageSize: 1
     });
     return response.total > 0;
   } catch (error) {

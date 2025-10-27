@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import Wizard from "@/core/components/Wizard/Wizard";
 import StepPatient from "./steps/StepPatient";
@@ -22,7 +22,9 @@ import {
 export default function NewAppointment() {
   const navigate = useNavigate();
   const { patientId: urlPatientId } = useParams<{ patientId?: string }>();
+  const [searchParams] = useSearchParams();
   const [isPatientPreSelected, setIsPatientPreSelected] = useState(false);
+  const [isSchedulerPreFilled, setIsSchedulerPreFilled] = useState(false);
 
   const methods = useForm<AppointmentFormData>({
     resolver: zodResolver(appointmentFormSchema) as any,
@@ -57,6 +59,30 @@ export default function NewAppointment() {
       // We'll let the StepPatient component handle fetching and setting the patient name
     }
   }, [urlPatientId, methods]);
+
+  // Handle pre-fill from scheduler (query params)
+  useEffect(() => {
+    const therapistId = searchParams.get("therapistId");
+    const date = searchParams.get("date");
+    const hour = searchParams.get("hour");
+
+    if (therapistId && date && hour) {
+      setIsSchedulerPreFilled(true);
+      
+      // Pre-fill form fields
+      methods.setValue("therapistId", therapistId);
+      methods.setValue("appointmentDate", date);
+      
+      // Convert hour to time format (HH:00)
+      const startTime = `${hour.padStart(2, "0")}:00`;
+      methods.setValue("startTime", startTime);
+      
+      // Auto-calculate end time (1 hour later)
+      const endHour = parseInt(hour) + 1;
+      const endTime = `${endHour.toString().padStart(2, "0")}:00`;
+      methods.setValue("endTime", endTime);
+    }
+  }, [searchParams, methods]);
 
   // Enhanced error handling
   const { generalError, clearAllErrors, handleFormError } =
@@ -212,7 +238,9 @@ export default function NewAppointment() {
                     preSelectedPatientId={urlPatientId}
                   />
                 )}
-                {steps[step] === "Details" && <StepDetails />}
+                {steps[step] === "Details" && (
+                  <StepDetails isSchedulerPreFilled={isSchedulerPreFilled} />
+                )}
                 {steps[step] === "Review" && <StepReview />}
               </Wizard>
             </div>
