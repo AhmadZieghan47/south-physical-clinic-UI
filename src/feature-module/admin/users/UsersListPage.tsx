@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useUsers } from "./hooks/useUsers";
 import UsersTable from "./components/UsersTable";
 import UserFilters from "./components/UserFilters";
-// import UserFormModal from "./UserFormModal";
+import UserFormModal from "./UserFormModal";
 import ResetPasswordModal from "./ResetPasswordModal";
 import type { UsersFilters } from "./components/UserFilters";
 import type { AppUser } from "../../../api/users";
@@ -21,7 +21,7 @@ const UsersListPage: React.FC = () => {
     pageSize: 50,
   });
 
-  const [_showFormModal, setShowFormModal] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<AppUser | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -74,16 +74,16 @@ const UsersListPage: React.FC = () => {
     }
   };
 
-  // const handleFormSuccess = () => {
-  //   setShowFormModal(false);
-  //   setSelectedUser(null);
-  //   refetch();
-  // };
+  const handleFormSuccess = () => {
+    setShowFormModal(false);
+    setSelectedUser(null);
+    refetch();
+  };
 
-  // const handleFormClose = () => {
-  //   setShowFormModal(false);
-  //   setSelectedUser(null);
-  // };
+  const handleFormClose = () => {
+    setShowFormModal(false);
+    setSelectedUser(null);
+  };
 
   const handleResetPasswordSuccess = () => {
     setShowResetPasswordModal(false);
@@ -185,13 +185,13 @@ const UsersListPage: React.FC = () => {
         )}
 
         {/* Form Modal */}
-        {/* {showFormModal && (
+        {showFormModal && (
           <UserFormModal
             user={selectedUser}
             onClose={handleFormClose}
             onSuccess={handleFormSuccess}
           />
-        )} */}
+        )}
 
         {/* Reset Password Modal */}
         {showResetPasswordModal && selectedUser && (

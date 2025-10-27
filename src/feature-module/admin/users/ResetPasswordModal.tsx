@@ -252,4 +252,3 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
 
 export default ResetPasswordModal;
 
-
