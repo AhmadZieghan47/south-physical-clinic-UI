@@ -136,7 +136,7 @@ export function useErrorHandling(
           retryTimeoutRef.current = setTimeout(() => {
             setRetryCount(retryAttemptsRef.current);
             // The retry will be handled by the calling code
-          }, delay);
+          }, delay) as unknown as number;
         }
       } else {
         // Handle non-API errors (network, timeout, etc.)
