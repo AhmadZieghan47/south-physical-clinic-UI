@@ -14,13 +14,16 @@
     "moduleDetection": "force",
     "noEmit": true,
 
-  /* Linting */
-  "strict": true,
-  "noUnusedLocals": true,
-  "noUnusedParameters": true,
-  "erasableSyntaxOnly": true,
-  "noFallthroughCasesInSwitch": true,
-  "noUncheckedSideEffectImports": true
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    /* Node/Vite types */
+    "types": ["node", "vite/client"]
   },
   "include": ["vite.config.ts"]
 }
