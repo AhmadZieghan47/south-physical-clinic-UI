@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "start": "vite preview",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@ant-design/pro-layout": "^7.22.7",
     "@hookform/resolvers": "^5.2.2",
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
@@ -39,7 +40,7 @@
     "@types/react-slick": "^0.23.13",
     "@types/react-star-ratings": "^2.3.3",
     "@vitejs/plugin-react": "^4.6.0",
-    "antd": "^5.26.5",
+    "antd": "^5.27.6",
     "apexcharts": "^4.7.0",
     "bootstrap": "^5.3.7",
     "clipboard-copy": "^4.0.1",
