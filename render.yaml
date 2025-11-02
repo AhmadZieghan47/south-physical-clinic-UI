@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: south-physical-clinic-ui
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist -l $PORT
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
