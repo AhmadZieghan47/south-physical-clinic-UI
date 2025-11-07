@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ErrorBoundary } from "@/components/ErrorDisplay";
+import { ErrorBoundary } from "@/core/common/error-display/ErrorDisplay";
 import { useScheduler } from "./hooks/useScheduler";
 import SchedulerBoard from "./components/SchedulerBoard";
 import OverbookingWidget from "./components/OverbookingWidget";

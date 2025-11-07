@@ -17,7 +17,7 @@ import {
 import {
   SmartError,
   ErrorBoundary,
-} from "../../../../../components/ErrorDisplay";
+} from "@/core/common/error-display/ErrorDisplay";
 
 export default function NewAppointment() {
   const navigate = useNavigate();

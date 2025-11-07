@@ -1,0 +1,92 @@
+/* Users Management Antd Version Styles */
+
+.users-antd-page {
+  min-height: calc(100vh - 200px);
+  padding: 24px;
+}
+
+/* Page header customization */
+.users-antd-header {
+  margin-bottom: 24px;
+}
+
+/* Custom role tag colors */
+.role-tag-admin {
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+  color: white;
+}
+
+.role-tag-manager {
+  background: #faad14;
+  border-color: #faad14;
+  color: white;
+}
+
+.role-tag-reception {
+  background: #1890ff;
+  border-color: #1890ff;
+  color: white;
+}
+
+.role-tag-therapist {
+  background: #52c41a;
+  border-color: #52c41a;
+  color: white;
+}
+
+/* Password strength indicator */
+.password-strength-indicator {
+  margin-top: 8px;
+}
+
+.password-strength-weak {
+  color: #ff4d4f;
+}
+
+.password-strength-medium {
+  color: #faad14;
+}
+
+.password-strength-strong {
+  color: #52c41a;
+}
+
+/* User avatar in table */
+.user-avatar-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Action buttons */
+.user-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Filter section */
+.users-filters {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .users-antd-page {
+    padding: 16px;
+  }
+  
+  .user-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .bant-table {
+    font-size: 12px;
+  }
+}
+

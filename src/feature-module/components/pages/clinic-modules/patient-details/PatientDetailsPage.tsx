@@ -17,7 +17,7 @@ import AppointmentDetailsModal from "@/core/components/AppointmentDetailsModal";
 import EditAppointmentModal from "@/core/components/EditAppointmentModal";
 import CancelAppointmentModal from "@/core/components/CancelAppointmentModal";
 import { useEnhancedPatientDetails } from "./hooks/useEnhancedPatientDetails";
-import { SmartError, ErrorBoundary } from "@/components/ErrorDisplay";
+import { SmartError, ErrorBoundary } from "@/core/common/error-display/ErrorDisplay";
 import { createPayment } from "@/api/payments";
 import { cancelAppointment } from "@/api/enhancedAppointments";
 import type { CancelReasonT } from "@/types/typedefs";

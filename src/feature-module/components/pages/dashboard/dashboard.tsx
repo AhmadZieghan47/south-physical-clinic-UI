@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import ImageWithBasePath from "../../../../core/imageWithBasePath";
 import { all_routes } from "../../../routes/all_routes";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Chart from "react-apexcharts";
 import SCol2Chart from "./chats/scol2";
 import SCol3Chart from "./chats/scol3";
@@ -62,6 +62,26 @@ const Dashboard = () => {
   const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>["mode"]) => {
     console.log(value.format("YYYY-MM-DD"), mode);
   };
+
+  // Chart cleanup - defensive measure to prevent memory leaks
+  const chartInstancesRef = useRef<any[]>([]);
+  
+  useEffect(() => {
+    // Cleanup function runs when component unmounts
+    return () => {
+      chartInstancesRef.current.forEach((chartInstance) => {
+        if (chartInstance && typeof chartInstance.destroy === 'function') {
+          try {
+            chartInstance.destroy();
+          } catch (error) {
+            console.warn('Chart cleanup error:', error);
+          }
+        }
+      });
+      chartInstancesRef.current = [];
+    };
+  }, []);
+
   return (
     <>
       {/* ========================

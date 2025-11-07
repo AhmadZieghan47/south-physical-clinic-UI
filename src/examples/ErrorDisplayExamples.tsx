@@ -8,7 +8,7 @@ import {
   ErrorBoundary,
   ErrorToast,
   ErrorIcon,
-} from "../components/ErrorDisplay";
+} from "@/core/common/error-display/ErrorDisplay";
 import {
   useErrorHandling,
   useFormErrorHandling,

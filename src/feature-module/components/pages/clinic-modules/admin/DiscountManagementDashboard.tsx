@@ -3,7 +3,7 @@ import { useFormErrorHandling } from "../../../../../hooks/useErrorHandling";
 import {
   SmartError,
   ErrorBoundary,
-} from "../../../../../components/ErrorDisplay";
+} from "@/core/common/error-display/ErrorDisplay";
 import { api } from "../../../../../lib/api";
 
 interface Discount {

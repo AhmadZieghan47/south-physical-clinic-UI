@@ -5,7 +5,7 @@ import { all_routes } from "@/feature-module/routes/all_routes";
 import Datatable from "@/core/common/dataTable";
 import SearchFilters from "./filters";
 import { usePatientsTable } from "@/hooks/useEnhancedPatientsTable";
-import { SmartError } from "@/components/ErrorDisplay";
+import { SmartError } from "@/core/common/error-display/ErrorDisplay";
 
 const Patients = () => {
   const [searchText, setSearchText] = useState<string>("");

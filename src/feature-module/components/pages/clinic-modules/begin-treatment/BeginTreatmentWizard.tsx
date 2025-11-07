@@ -12,7 +12,7 @@ import Step4DiscountRequest from "./steps/Step4DiscountRequest";
 import { beginTreatmentSchema, type BeginTreatmentFormData } from "./schema";
 import { beginTreatment, getBeginTreatmentData } from "./api";
 import { useFormErrorHandling } from "@/hooks/useErrorHandling";
-import { SmartError, ErrorBoundary } from "@/components/ErrorDisplay";
+import { SmartError, ErrorBoundary } from "@/core/common/error-display/ErrorDisplay";
 import { all_routes } from "@/feature-module/routes/all_routes";
 
 const STEPS = [

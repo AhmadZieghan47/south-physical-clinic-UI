@@ -1,0 +1,351 @@
+/* Improved Users Management Bootstrap Styles */
+
+.users-bootstrap-page {
+  min-height: calc(100vh - 200px);
+}
+
+/* Modern card styling */
+.card-modern {
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+/* Avatar styling */
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  margin-right: 12px;
+}
+
+/* Role badge styling */
+.role-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.role-badge-admin {
+  background-color: #dc3545;
+  color: white;
+}
+
+.role-badge-manager {
+  background-color: #fd7e14;
+  color: white;
+}
+
+.role-badge-reception {
+  background-color: #0dcaf0;
+  color: white;
+}
+
+.role-badge-therapist {
+  background-color: #198754;
+  color: white;
+}
+
+/* Status badge */
+.status-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.status-badge-active {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-badge-inactive {
+  background-color: #e2e3e5;
+  color: #41464b;
+}
+
+/* Action buttons */
+.action-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Filter section */
+.filter-section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Table styling */
+.table-modern {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-modern thead th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  color: #495057;
+  padding: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-modern tbody tr {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-modern tbody tr:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.table-modern td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+/* Table responsive container with scroll */
+.table-responsive {
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure table doesn't jump during hover */
+.table-responsive::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Pagination styling */
+.pagination-modern .page-link {
+  border-radius: 6px;
+  margin: 0 4px;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.pagination-modern .page-link:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.pagination-modern .page-item.active .page-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+}
+
+/* Modal improvements */
+.modal-header-modern {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.modal-header-modern .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.modal-content-modern {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Password strength indicator */
+.password-strength {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 8px;
+  background-color: #e9ecef;
+  overflow: hidden;
+}
+
+.password-strength-bar {
+  height: 100%;
+  transition: width 0.3s, background-color 0.3s;
+}
+
+.password-strength-weak {
+  background-color: #dc3545;
+}
+
+.password-strength-medium {
+  background-color: #ffc107;
+}
+
+.password-strength-strong {
+  background-color: #198754;
+}
+
+/* Toast notifications */
+.toast-container-custom {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.toast-custom {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading overlay */
+.loading-overlay-modern {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+/* Empty state */
+.empty-state-modern {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-state-modern i {
+  font-size: 64px;
+  color: #dee2e6;
+  margin-bottom: 16px;
+}
+
+.empty-state-modern h5 {
+  color: #6c757d;
+  margin-bottom: 8px;
+}
+
+.empty-state-modern p {
+  color: #adb5bd;
+}
+
+/* Form control improvements */
+.form-control-modern {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 10px 12px;
+  transition: all 0.2s;
+}
+
+.form-control-modern:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-label-modern {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 6px;
+}
+
+/* Button improvements */
+.btn-modern {
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.btn-modern:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
+}
+
+.btn-primary-modern {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+}
+
+.btn-primary-modern:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+  opacity: 1;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .users-bootstrap-page {
+    padding: 12px;
+  }
+
+  .filter-section {
+    padding: 16px;
+  }
+
+  .table-modern {
+    font-size: 14px;
+  }
+
+  .action-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}

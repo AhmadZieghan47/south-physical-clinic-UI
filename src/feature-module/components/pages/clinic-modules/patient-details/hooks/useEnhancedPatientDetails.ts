@@ -22,6 +22,11 @@ import {
   formatFileSize,
 } from "../utils";
 
+// Memory optimization: Limit array sizes to prevent unbounded growth
+const MAX_VISIBLE_APPOINTMENTS = 500;
+const MAX_VISIBLE_PAYMENTS = 500;
+const MAX_VISIBLE_FILES = 500;
+
 function getPaymentStatusLabel(paidAt: string): string {
   return paidAt ? "Completed" : "Pending";
 }
@@ -106,23 +111,35 @@ export function useEnhancedPatientDetails(
   const allAppointments: AppointmentRow[] = useMemo(() => {
     if (!patient?.plans) return [];
     const rows: AppointmentRow[] = [];
-    (patient.plans as TreatmentPlan[]).forEach((plan) => {
-      (plan.appointments as Appointment[] | undefined)?.forEach(
-        (appointment) => {
-          rows.push({
-            ...appointment,
-            therapist: {
-              name: `Therapist ${appointment.therapistId}`,
-              specialty: "Physical Therapist",
-              avatarSrc: "assets/img/doctors/doctor-01.jpg",
-            },
-            sessionTypeLabel: getSessionTypeLabel(appointment.sessionType),
-            locationLabel: getLocationLabel(appointment.location),
-            statusLabel: getStatusLabel(appointment.status),
-          } as AppointmentRow);
-        }
-      );
-    });
+    
+    // Early exit if no plans
+    const plans = patient.plans as TreatmentPlan[];
+    if (!plans.length) return [];
+    
+    // Limit appointments to prevent unbounded memory growth
+    for (const plan of plans) {
+      if (rows.length >= MAX_VISIBLE_APPOINTMENTS) break;
+      
+      const appointments = plan.appointments as Appointment[] | undefined;
+      if (!appointments) continue;
+      
+      for (const appointment of appointments) {
+        if (rows.length >= MAX_VISIBLE_APPOINTMENTS) break;
+        
+        rows.push({
+          ...appointment,
+          therapist: {
+            name: `Therapist ${appointment.therapistId}`,
+            specialty: "Physical Therapist",
+            avatarSrc: "assets/img/doctors/doctor-01.jpg",
+          },
+          sessionTypeLabel: getSessionTypeLabel(appointment.sessionType),
+          locationLabel: getLocationLabel(appointment.location),
+          statusLabel: getStatusLabel(appointment.status),
+        } as AppointmentRow);
+      }
+    }
+    
     return rows.sort(
       (a, b) => new Date(b.startsAt).getTime() - new Date(a.startsAt).getTime()
     );
@@ -130,7 +147,12 @@ export function useEnhancedPatientDetails(
 
   const allPayments: PaymentRow[] = useMemo(() => {
     if (!patient?.payments) return [];
-    const rows: PaymentRow[] = (patient.payments as Payment[]).map(
+    
+    const payments = patient.payments as Payment[];
+    // Limit the number of payments processed to prevent memory issues
+    const limitedPayments = payments.slice(0, MAX_VISIBLE_PAYMENTS);
+    
+    const rows: PaymentRow[] = limitedPayments.map(
       (payment) =>
         ({
           ...payment,
@@ -139,6 +161,7 @@ export function useEnhancedPatientDetails(
           statusLabel: getPaymentStatusLabel(payment.paidAt),
         } as PaymentRow)
     );
+    
     return rows.sort(
       (a, b) => new Date(b.paidAt).getTime() - new Date(a.paidAt).getTime()
     );
@@ -146,7 +169,12 @@ export function useEnhancedPatientDetails(
 
   const allFiles: FileRow[] = useMemo(() => {
     if (!patient?.files) return [];
-    const rows: FileRow[] = (patient.files as FileBlob[]).map(
+    
+    const files = patient.files as FileBlob[];
+    // Limit the number of files processed to prevent memory issues
+    const limitedFiles = files.slice(0, MAX_VISIBLE_FILES);
+    
+    const rows: FileRow[] = limitedFiles.map(
       (file) =>
         ({
           ...file,
@@ -155,6 +183,7 @@ export function useEnhancedPatientDetails(
           downloadUrl: `/api/files/download/${file.id}`,
         } as FileRow)
     );
+    
     return rows.sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

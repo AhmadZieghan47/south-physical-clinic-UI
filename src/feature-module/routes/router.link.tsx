@@ -58,7 +58,7 @@ import CreatePatient from "../components/pages/clinic-modules/create-patient/cre
 import BeginTreatmentWizard from "../components/pages/clinic-modules/begin-treatment/BeginTreatmentWizard";
 import DiscountManagementDashboard from "../components/pages/clinic-modules/admin/DiscountManagementDashboard";
 import DiagnosesListPage from "../admin/diagnoses/DiagnosesListPage";
-import UsersListPage from "../admin/users/UsersListPage";
+import UsersListPage from "../admin/users-bootstrap/UsersListPage";
 import DoctorDetails from "../components/pages/clinic-modules/doctor-details/doctorDetails";
 import DoctorsList from "../components/pages/clinic-modules/doctors-list/doctorsList";
 import Doctors from "../components/pages/clinic-modules/doctors/doctors";
@@ -252,6 +252,7 @@ import { all_routes } from "./all_routes";
 import { Navigate, Route } from "react-router";
 import ButtonExamples from "@/core/common/button/Button.example";
 import ModalExamples from "../components/pages/ui-modules/ui-interface/base-ui/modalExamples";
+import { EnumLabelsListPage } from "../admin/enum-labels";
 
 const routes = all_routes;
 
@@ -1571,6 +1572,11 @@ export const authRoutes = [
   {
     path: routes.underMaintenance,
     element: <UnderMaintenance />,
+    route: Route,
+  },
+  {
+    path: "/admin/enum-labels",
+    element: <EnumLabelsListPage />,
     route: Route,
   },
 ];
