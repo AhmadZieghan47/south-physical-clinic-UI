@@ -1,11 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ImageWithBasePath from "../../imageWithBasePath";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { SidebarData } from "./sidebarData";
 import { useDispatch, useSelector } from "react-redux";
 import { setExpandMenu, setMobileSidebar } from "../../redux/sidebarSlice";
 import { updateTheme } from "../../redux/themeSlice";
 import { all_routes } from "../../../feature-module/routes/all_routes";
+import { devToolsEnabled } from "../../../environment";
 
 import "./sidebar.css"
 
@@ -14,6 +15,17 @@ const Sidebar = () => {
   const [subOpen, setSubOpen] = useState<any>("");
   const [subsidebar, setSubsidebar] = useState("");
   const dispatch = useDispatch();
+
+  // Filter sidebar data based on devTools environment variable
+  // Always show "Main Menu" and "Admin" sections
+  // Hide Development, UI Components, Charts & Maps, Tables, Icons, and Forms when devTools is disabled
+  const filteredSidebarData = useMemo(() => {
+    if (devToolsEnabled) {
+      return SidebarData;
+    }
+    // When devTools is disabled, show first two sections (Main Menu and Admin)
+    return SidebarData.slice(0, 2);
+  }, []);
 
   const toggleSidebar = (title: any) => {
     localStorage.setItem("menuOpened", title);
@@ -156,7 +168,7 @@ const Sidebar = () => {
         <div className="sidebar-inner" data-simplebar="">
           <div id="sidebar-menu" className="sidebar-menu">
             <ul>
-              {SidebarData?.map((mainLabel, index) => (
+              {filteredSidebarData?.map((mainLabel, index) => (
                 <React.Fragment key={`main-${index}`}>
                   <li className="menu-title">
                     <span>{mainLabel?.tittle}</span>

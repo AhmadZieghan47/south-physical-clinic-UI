@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 
 import Wizard from "@/core/components/Wizard/Wizard";
 import { useFormErrorHandling, useErrorToast } from "@/hooks/useErrorHandling";
-import { SmartError, ErrorBoundary } from "@/components/ErrorDisplay";
+import { SmartError, ErrorBoundary } from "@/core/common/error-display/ErrorDisplay";
 import StepPersonal from "./steps/StepPersonal";
 import StepMedical from "./steps/StepMedical";
 import StepAttachments from "./steps/StepAttachments";

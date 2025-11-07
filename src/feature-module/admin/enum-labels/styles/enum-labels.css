@@ -1,0 +1,127 @@
+/* Enum Labels Styles */
+
+.enum-type-header {
+  font-weight: 600;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.enum-type-header:hover {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+.enum-type-selector .btn-group {
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.enum-type-selector .btn {
+  margin-bottom: 0.25rem;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* RTL support for Arabic text */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* Bilingual form layout improvements */
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Badge styling */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* Table improvements */
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table thead th {
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+  background-color: #f8f9fa;
+}
+
+/* Code styling */
+code.text-primary {
+  background-color: rgba(13, 110, 253, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 90%;
+}
+
+/* Modal improvements */
+.modal-header {
+  border-bottom: 2px solid #e9ecef;
+}
+
+.modal-footer {
+  border-top: 2px solid #e9ecef;
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+  font-weight: 600;
+}
+
+/* Alert improvements */
+.alert {
+  border-left: 4px solid;
+}
+
+.alert-info {
+  border-left-color: #0dcaf0;
+}
+
+.alert-danger {
+  border-left-color: #dc3545;
+}
+
+/* Custom checkbox improvements */
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: #0d6efd;
+  background-color: #0d6efd;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .enum-type-selector .btn-group {
+    width: 100%;
+  }
+
+  .enum-type-selector .btn {
+    flex: 1 0 auto;
+  }
+
+  .page-header .col-auto {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .page-header .btn {
+    width: 100%;
+  }
+}
+
+
+
+
+

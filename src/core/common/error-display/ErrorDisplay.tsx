@@ -6,7 +6,7 @@ import type {
   ApiErrorResponse,
   ErrorCategory,
   ErrorSeverity,
-} from "../types/errors";
+} from "../../../types/errors";
 import {
   transformErrorForUI,
   getUserFriendlyMessage,
@@ -14,7 +14,7 @@ import {
   formatValidationErrors,
   shouldTriggerLogout,
   isRetryableError,
-} from "../utils/errorHandling";
+} from "../../../utils/errorHandling";
 
 // ============================================================================
 // ERROR ICON COMPONENT

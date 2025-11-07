@@ -4,7 +4,7 @@ import type { AppointmentRow } from "@/feature-module/components/pages/clinic-mo
 import type { SessionTypeT } from "@/types/typedefs";
 import { updateAppointment } from "@/api/enhancedAppointments";
 import { useErrorHandling } from "@/hooks/useErrorHandling";
-import { SmartError } from "@/components/ErrorDisplay";
+import { SmartError } from "@/core/common/error-display/ErrorDisplay";
 
 // Union type for appointment data from different sources
 type AppointmentData = AppointmentWithRelations | AppointmentRow | any;

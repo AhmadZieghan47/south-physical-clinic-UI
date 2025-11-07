@@ -5,7 +5,7 @@ import { all_routes } from "@/feature-module/routes/all_routes";
 import Datatable from "@/core/common/dataTable";
 import AppointmentsFilters from "./filters";
 import { useAppointmentsTable } from "@/hooks/useAppointmentsTable";
-import { SmartError } from "@/components/ErrorDisplay";
+import { SmartError } from "@/core/common/error-display/ErrorDisplay";
 import AppointmentDetailsModal from "@/core/components/AppointmentDetailsModal";
 import EditAppointmentModal from "@/core/components/EditAppointmentModal";
 import CancelAppointmentModal from "@/core/components/CancelAppointmentModal";

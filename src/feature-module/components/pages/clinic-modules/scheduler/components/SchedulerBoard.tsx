@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router";
 import type { Therapist, Appointment } from "../types";
 import { hourLabel, hourRange, getCellCapacity, getCellState } from "../utils";
@@ -25,10 +25,14 @@ const SchedulerBoard: React.FC<SchedulerBoardProps> = ({
 }) => {
   const navigate = useNavigate();
   const hours = hourRange();
-  const filteredTherapists =
-    therapistFilter === "all"
+  
+  // Memoize filtered therapists to prevent unnecessary recalculations
+  const filteredTherapists = useMemo(
+    () => therapistFilter === "all"
       ? therapists
-      : therapists.filter((t) => t.id === therapistFilter);
+      : therapists.filter((t) => t.id === therapistFilter),
+    [therapists, therapistFilter]
+  );
 
   const handleEmptySlotClick = (therapistId: string, hour: number) => {
     // Build URL with query params for pre-filling
@@ -45,19 +49,23 @@ const SchedulerBoard: React.FC<SchedulerBoardProps> = ({
     onAppointmentClick(appointmentId);
   };
 
-  // Organize appointments by therapist and hour
-  const appointmentsByTherapistAndHour = new Map<string, Map<number, Appointment[]>>();
-
-  appointments.forEach((apt) => {
-    if (!appointmentsByTherapistAndHour.has(apt.therapistId)) {
-      appointmentsByTherapistAndHour.set(apt.therapistId, new Map());
-    }
-    const therapistSlots = appointmentsByTherapistAndHour.get(apt.therapistId)!;
-    if (!therapistSlots.has(apt.hour)) {
-      therapistSlots.set(apt.hour, []);
-    }
-    therapistSlots.get(apt.hour)!.push(apt);
-  });
+  // Memoize the appointment organization to prevent re-creating Map on every render
+  const appointmentsByTherapistAndHour = useMemo(() => {
+    const map = new Map<string, Map<number, Appointment[]>>();
+    
+    appointments.forEach((apt) => {
+      if (!map.has(apt.therapistId)) {
+        map.set(apt.therapistId, new Map());
+      }
+      const therapistSlots = map.get(apt.therapistId)!;
+      if (!therapistSlots.has(apt.hour)) {
+        therapistSlots.set(apt.hour, []);
+      }
+      therapistSlots.get(apt.hour)!.push(apt);
+    });
+    
+    return map;
+  }, [appointments]);
 
   const getAppointmentsForCell = (therapistId: string, hour: number): Appointment[] => {
     return appointmentsByTherapistAndHour.get(therapistId)?.get(hour) || [];

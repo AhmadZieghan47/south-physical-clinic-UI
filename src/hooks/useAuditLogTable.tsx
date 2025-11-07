@@ -2,6 +2,9 @@ import { useState, useEffect, useMemo } from "react";
 import { getAuditLogs } from "../api/auditLog";
 import type { AuditLog } from "../types/typedefs";
 
+// Memory optimization: Cap maximum page size to prevent excessive loads
+const MAX_PAGE_SIZE = 100;
+
 export interface UseAuditLogTableParams {
   page?: number;
   pageSize?: number;
@@ -85,12 +88,13 @@ export function useAuditLogTable({
     try {
       const data = await getAuditLogs({
         page: currentPage,
-        pageSize: currentPageSize,
+        pageSize: Math.min(currentPageSize, MAX_PAGE_SIZE), // Cap page size
         entity,
         action,
         role,
       });
-      setAuditLogs(data);
+      // Validate response is array before setting state
+      setAuditLogs(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch audit logs:", error);
       setAuditLogs([]);

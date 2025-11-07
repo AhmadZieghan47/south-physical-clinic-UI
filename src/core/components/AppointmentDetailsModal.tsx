@@ -7,7 +7,7 @@ import {
   type AppointmentDetails,
 } from "@/api/enhancedAppointments";
 import { useErrorHandling } from "@/hooks/useErrorHandling";
-import { SmartError } from "@/components/ErrorDisplay";
+import { SmartError } from "@/core/common/error-display/ErrorDisplay";
 import type {
   PreferredNextT,
   Patient,
